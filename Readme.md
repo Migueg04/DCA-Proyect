@@ -23,9 +23,9 @@
 
 # The following development dependencies will be used: 
 
-°`husky`: It is used to automate tasks such as running `lint` before a commit
-°`TypeScript`: JS extension that helps detect errors and create better code
-°`eslint`: to maintain clean and consistent code
-°`webpack-cli`: Allows you to run and configure Webpack
-°`webpack-dev-server`: Facilitate the development flow, reload changes without refreshing the page
-°`ts-loader`: Compile TypeScript to JavaScript using `tsc`
+°`husky`: It is used to automate tasks such as running `lint` before a commit.
+°`TypeScript`: JS extension that helps detect errors and create better code.
+°`eslint`: to maintain clean and consistent code.
+°`webpack-cli`: Allows you to run and configure Webpack.
+°`webpack-dev-server`: Facilitate the development flow, reload changes without refreshing the page.
+°`ts-loader`: Compile TypeScript to JavaScript using `tsc`.
