@@ -1,7 +1,6 @@
-
 interface Drop {
     username: string;
-    verified: boolean;
+    verified: string;
     profileImage: string;
     content: string;
     image?: string;
@@ -12,13 +11,19 @@ interface Drop {
     card.className = "drop-card";
   
     card.innerHTML = `
-      <div class="drop-header">
-        <img src="${drop.profileImage}" alt="${drop.username}" class="profile-img" />
-        <span class="username">${drop.username}</span>
-        <img src="/assets/verified.png" alt="verified" class="verified-icon" />
+      <div class="drop-image-container">
+        ${drop.image ? `<img src="${drop.image}" alt="drop image" class="drop-image" />` : ""}
       </div>
-      <p class="drop-text">${drop.content}</p>
-      ${drop.image ? `<img src="${drop.image}" alt="drop image" class="drop-image" />` : ""}
+      <div class="drop-content">
+        <div class="drop-header">
+          <img src="${drop.profileImage}" alt="${drop.username}" class="profile-img" />
+          <div class="user-info">
+            <span class="username">${drop.username}</span>
+            <img src="${drop.verified}" alt="verified" class="verified-icon" />
+          </div>
+        </div>
+        <p class="drop-text">${drop.content}</p>
+      </div>
     `;
   
     return card;

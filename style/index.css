@@ -1,32 +1,85 @@
-.drop-card {
-    background: #1a1a1a;
+body {
+    background-color: #10062B;
+    font-family: 'Poppins', sans-serif;
+    display: flex;
+    justify-content: center;
+    padding: 2rem;
+  }
+  
+  #drops-container {
+    width: 100%;
+    max-width: 700px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+ 
+  .drop-card {
+    display: flex;
+    flex-direction: row;
+    background: #10062B;
     color: white;
     padding: 1rem;
     margin-bottom: 1rem;
     border-radius: 12px;
-    box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.05);
+    gap: 1rem;
+    width: 100%;
+    align-items: flex-start;
   }
   
-  .drop-header {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-  }
   
-  .profile-img {
-    width: 40px;
-    height: 40px;
-    border-radius: 999px;
-  }
-  
-  .verified-icon {
-    width: 18px;
-    height: 18px;
+  .drop-left {
+    flex-shrink: 0;
   }
   
   .drop-image {
-    margin-top: 1rem;
-    width: 100%;
+    width: 230px;
+    height: 230px;
+    object-fit: cover;
     border-radius: 12px;
+  }
+  
+
+  .drop-right {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+  }
+  
+  /* Header: perfil + nombre + verificado en línea */
+  .drop-header {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  /* Imagen perfil */
+  .profile-img {
+    width: 35px;
+    height: 35px;
+    border-radius: 999px;
+  }
+  
+  /* Nombre usuario */
+  .username {
+    font-weight: bold;
+    color: white;
+  }
+  
+  /* Icono verificado */
+  .verified-icon {
+    width: 16px;
+    height: 16px;
+  }
+  
+  /* Texto del drop */
+  .drop-text {
+    font-size: 0.95rem;
+    line-height: 1.4;
+    color: white;
   }
   
