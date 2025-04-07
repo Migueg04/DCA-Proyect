@@ -9,7 +9,11 @@ class Comments extends HTMLElement{
     }
 
     render(){
-        
+        if (this.shadowRoot)
+            this.shadowRoot.innerHTML = `
+                
+                
+            `
     }
 }
 export default Comments
