@@ -13,13 +13,18 @@ export default {
                 use: 'ts-loader',
                 exclude: /node_modules/,
             },
+            {
+                test: /\.json$/, // 
+                type: 'json'
+            }
         ],
     },
     resolve: {
-        extensions: ['.tsx', '.ts', '.js'],
+        extensions: ['.tsx', '.ts', '.js', '.json'], // 
     },
     output: {
         filename: 'bundle.js',
-        path: path.resolve(__dirname, 'dist'),
+        path: path.resolve(__dirname, 'public'),
     },
 };
+

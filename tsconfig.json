@@ -1,7 +1,8 @@
 {
   "compilerOptions": {
+    "resolveJsonModule": true,
       "target": "ESNext", // Cambiar a ESNext
-      "module": "commonjs", // Cambiar a commonjs
+      "module": "CommonJS", // Cambiar a commonjs
       "strict": true, // Es recomendable activar el modo estricto
       "esModuleInterop": true, // Habilitar la interoperabilidad de módulos
       "skipLibCheck": true, // Omitir la comprobación de librerías

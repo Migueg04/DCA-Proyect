@@ -1,0 +1,106 @@
+[
+    {
+      "username": "GoldenTarnished",
+      "verified": true,
+      "profileImage": "assets/user1.png",
+      "content": "¡Aún no supero la pelea contra Malenia! Elden Ring es una obra de arte.",
+      "image": "assets/elden_ring.png"
+    },
+    {
+      "username": "KnightEchoes",
+      "verified": true,
+      "profileImage": "assets/user2.png",
+      "content": "Hollow Knight me hace sentir cosas que ningún otro juego logró.",
+      "image": "assets/hollow_knight.png"
+    },
+    {
+      "username": "PixelSteve",
+      "verified": true,
+      "profileImage": "assets/user3.png",
+      "content": "Construí mi casa soñada en Minecraft y luego... llegó un creeper 🧨💥",
+      "image": "assets/minecraft.png"
+    },
+    {
+      "username": "BuildBattleRoyale",
+      "verified": true,
+      "profileImage": "assets/user4.png",
+      "content": "Fortnite cada vez se pone más loco con las colaboraciones 😮‍💨",
+      "image": "assets/fortnite.png"
+    },
+    {
+      "username": "OneTapValorant",
+      "verified": true,
+      "profileImage": "assets/user5.png",
+      "content": "¿Soy yo o Jett está otra vez rota?",
+      "image": "assets/valorant.png"
+    },
+    {
+      "username": "CyberRebel77",
+      "verified": true,
+      "profileImage": "assets/user6.png",
+      "content": "Volví a Cyberpunk 2077 después del parche 2.0. Es otro juego 🔥",
+      "image": "assets/cyberpunk2077.png"
+    },
+    {
+      "username": "GalacticJake",
+      "verified": true,
+      "profileImage": "assets/user7.png",
+      "content": "Starfield tiene potencial, pero me pierdo en los menús 😵",
+      "image": "assets/starfield.png"
+    },
+    {
+      "username": "KratosReturns",
+      "verified": true,
+      "profileImage": "assets/user8.png",
+      "content": "Jugar God of War con audífonos es otra experiencia 🎧",
+      "image": "assets/god_of_war.png"
+    },
+    {
+      "username": "MeowExplorer",
+      "verified": true,
+      "profileImage": "assets/user9.png",
+      "content": "STRAY me hizo llorar. No estaba preparado para eso 😿",
+      "image": "assets/stray.png"
+    },
+    {
+      "username": "WebSwinger2099",
+      "verified": true,
+      "profileImage": "assets/user10.png",
+      "content": "Spider-Man 2 tiene las mejores mecánicas de balanceo hasta ahora 🕸️",
+      "image": "assets/spiderman2.png"
+    },
+    {
+      "username": "ViceCityDreams",
+      "verified": true,
+      "profileImage": "assets/user11.png",
+      "content": "GTA VI será el evento gamer de la década, mark my words.",
+      "image": "assets/gtavi.png"
+    },
+    {
+      "username": "NoVARZone",
+      "verified": true,
+      "profileImage": "assets/user12.png",
+      "content": "FIFA 24 sigue siendo lo mismo... pero igual me vicio ⚽"
+    },
+    {
+      "username": "LinkAwakens",
+      "verified": true,
+      "profileImage": "assets/user13.png",
+      "content": "Tears of the Kingdom es una carta de amor al diseño de mundo abierto.",
+      "image": "assets/zelda_totk.png"
+    },
+    {
+      "username": "JumpMaster",
+      "verified": true,
+      "profileImage": "assets/user14.png",
+      "content": "Apex necesita un nuevo mapa urgente 😤"
+    },
+    {
+      "username": "BaronStealer",
+      "verified": true,
+      "profileImage": "assets/user15.png",
+      "content": "League of Legends me hace feliz y miserable al mismo tiempo 💔😂",
+      "image": "assets/league_of_legends.png"
+    }
+  ]
+  
