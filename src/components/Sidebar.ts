@@ -37,7 +37,8 @@ export enum SidebarAttribute {
   
       this.shadowRoot.innerHTML = `
        <style>
-  :host {
+        @media (max-width: 600px) {
+   :host {
     display: flex;
     flex-direction: column;
     align-items: center;
