@@ -1,5 +1,5 @@
 
-
+import './components/trendingPanel.ts';
 import { createDropCard } from "./components/dropCard";
 import drops from "./data/drops.json";
 
