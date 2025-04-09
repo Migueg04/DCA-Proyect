@@ -39,8 +39,9 @@ class SearchBar extends HTMLElement {
 
   render() {
     if (!this.shadowRoot) return;
-    this.shadowRoot.innerHTML = `
+    this.shadowRoot.innerHTML = ` 
       <style>
+       @media (max-width: 600px)
         :host {
           display: block;
           font-family: sans-serif;
