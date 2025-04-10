@@ -6,7 +6,8 @@
       "esModuleInterop": true, // Habilitar la interoperabilidad de módulos
       "skipLibCheck": true, // Omitir la comprobación de librerías
       "forceConsistentCasingInFileNames": true, // Forzar la consistencia en los nombres de archivo, útil para evitar errores en sistemas de archivos que no distinguen entre mayúsculas y minúsculas
-      "outDir": "./dist" // Directorio de salida
+      "outDir": "./dist", // Directorio de salida
+      "resolveJsonModule": true,
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "dist"]
