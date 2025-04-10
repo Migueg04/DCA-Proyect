@@ -1,1 +1,2 @@
-console.log("hola")
+import './components/Sidebar'; 
+import './components/searchbar'

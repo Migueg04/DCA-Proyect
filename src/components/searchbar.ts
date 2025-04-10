@@ -40,45 +40,43 @@ class SearchBar extends HTMLElement {
   render() {
     if (!this.shadowRoot) return;
     this.shadowRoot.innerHTML = ` 
-      <style>
-       @media (max-width: 600px)
-        :host {
-          display: block;
-          font-family: sans-serif;
-        }
-        input {
-          width: 100%;
-          padding: 8px;
-          border: 1px solid #ccc;
-          border-radius: 8px;
-          margin-bottom: 8px;
-          font-size: 14px;
-        }
-        ul {
-          list-style: none;
-          padding: 0;
-          margin: 0;
-          max-height: 200px;
-          overflow-y: auto;
-        }
-        li {
-          display: flex;
-          align-items: center;
-          gap: 10px;
-          padding: 6px 4px;
-          cursor: pointer;
-        }
-        li:hover {
-          background: #f3f3f3;
-        }
-        img {
-          width: 32px;
-          height: 32px;
-          border-radius: 50%;
-          object-fit: cover;
-        }
-      </style>
-      <input type="text" placeholder="Buscar usuarios..." />
+     <style>
+  .search-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem;
+    background: transparent;
+  }
+
+  .search-container input {
+    width: 100%;
+    max-width: 300px;
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid #ec4899;
+    padding: 0.5rem;
+    color: white;
+    font-size: 16px;
+    outline: none;
+  }
+
+  .search-container input::placeholder {
+    color: #ccc;
+  }
+
+  @media (max-width: 600px) {
+    .search-container {
+      padding: 0.5rem;
+    }
+
+    .search-container input {
+      font-size: 14px;
+      max-width: 100%;
+    }
+  }
+</style>
+      <input type="text" placeholder="Search for Usernames..." />
       <ul></ul>
     `;
   }

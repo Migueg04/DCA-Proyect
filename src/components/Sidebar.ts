@@ -36,67 +36,84 @@ export enum SidebarAttribute {
       if (!this.shadowRoot) return;
   
       this.shadowRoot.innerHTML = `
-       <style>
-        @media (max-width: 600px) {
-   :host {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: space-between;
-    background-color: #ec4899; /* Rosa fuerte */
-    width: 64px;
-    height: 100vh;
-    padding: 1rem 0;
-    box-sizing: border-box;
-    font-family: sans-serif;
-    border-radius: 20px;
-  }
+        <style>
+      :host {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: space-between;
+        background-color: #ec4899;
+        width: 64px;
+        height: 100vh;
+        padding: 1rem 0;
+        box-sizing: border-box;
+        font-family: sans-serif;
+        border-radius: 20px;
+        position: fixed;
+        left: 0;
+        top: 0;
+      }
 
-  .top-icons {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 1.5rem;
-  }
+      .top-icons {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.4 rem; 
+      }
 
-  .icon {
-    width: 28px;
-    height: 28px;
-    cursor: pointer;
-  }
+     
 
-  .logo {
-    width: 32px;
-    margin-bottom: 1rem;
-  }
+      .profile {
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        overflow: hidden;
+        border: 2px solid white;
+        margin-bottom: 0.5rem;
+      }
 
-  .profile {
-    width: 48px;
-    height: 48px;
-    border-radius: 50%;
-    overflow: hidden;
-    border: 2px solid white;
-    margin-bottom: 0.25rem;
-  }
+      .profile img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
 
-  .profile img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-</style>
+      @media (max-width: 600px) {
+        :host {
+          flex-direction: row;
+          width: 100%;
+          height: auto;
+          border-radius: 0;
+          padding: 0.5rem;
+          top: auto;
+          bottom: 0;
+        }
 
-  
-        <img src="${this.home}" alt="Home Icon" />
-        <img src="${this.add}" alt="Add Icon" />
-        <img src="${this.bookmark}" alt="Save Icon" />
-        <div class="spacer"></div>
-  
-        <div class="profile">
-          <img src="${this.profileimg ?? ''}" alt="Profile" />
-        </div>
-      `;
-    }
+        .top-icons {
+          flex-direction: row;
+          gap: 0.4rem;
+        }
+
+        .profile {
+          width: 36px;
+          height: 36px;
+          margin-bottom: 0;
+        }
+      }
+    </style>
+
+
+    <div class="icons">
+        <a href=""><img src="${this.home}" alt="Home Icon" class="icon" />
+        <a href=""><img src="${this.add}" alt="Add Icon" class="icon" />
+        <a href=""><img src="${this.bookmark}" alt="Bookmark Icon" class="icon" />
+    </div>
+
+    <div class="profile">
+      <img src="${this.profileimg ?? ''}" alt="Profile" />
+    </div>
+  `;
+}
   }
   
   customElements.define('side-bar', Sidebar);
