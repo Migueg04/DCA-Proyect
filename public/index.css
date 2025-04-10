@@ -1,0 +1,31 @@
+.drop-card {
+  background: #1a1a1a;
+  color: white;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  border-radius: 12px;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+}
+
+.drop-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.profile-img {
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+}
+
+.verified-icon {
+  width: 18px;
+  height: 18px;
+}
+
+.drop-image {
+  margin-top: 1rem;
+  width: 100%;
+  border-radius: 12px;
+}

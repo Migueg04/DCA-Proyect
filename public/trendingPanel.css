@@ -9,7 +9,7 @@
 .friends ul {
   list-style: none;
   padding: 0;
-
+}
   .friend {
     display: flex;
     align-items: center;

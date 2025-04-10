@@ -14,13 +14,18 @@ export default {
                 exclude: /node_modules/,
             },
             {
-                test: /\.json$/, // 
+                test: /\.css?$/,
+                use: 'css-loader',
+                exclude: /node_modules/,
+            },
+            {
+                test: /\.json$/, //
                 type: 'json'
             }
         ],
     },
     resolve: {
-        extensions: ['.tsx', '.ts', '.js', '.json'], // 
+        extensions: ['.tsx', '.ts', '.js', '.json'], //
     },
     output: {
         filename: 'bundle.js',
