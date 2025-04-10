@@ -103,3 +103,16 @@ body {
     }
     
   }
+
+  .comment-button {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+  }
+  
+  .comment-icon {
+    width: 20px;
+    height: 20px;
+  }
+  
