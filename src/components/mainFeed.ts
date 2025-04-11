@@ -1,18 +1,31 @@
-import { createDropCard } from "./dropCard";
-import drops from "../data/drops.json";
+import drops from '../data/drops.json';
+import { createDropCard } from './dropCard';
 
 interface Drop {
-    username: string;
-    verified: string;
-    profileImage: string;
-    content: string;
-    image?: string;
+  username: string;
+  verified: string;
+  profileImage: string;
+  content: string;
+  image?: string;
 }
 
-const container = document.getElementById("drops-container");
-if (!container) throw new Error("Contenedor de drops no encontrado");
+class MainFeed extends HTMLElement {
+  constructor() {
+    super();
+    this.attachShadow({ mode: 'open' });
+  }
 
-drops.forEach((drop: Drop) => {
-  const card = createDropCard(drop);
-  container.appendChild(card);
-});
+  connectedCallback() {
+    const container = document.createElement('div');
+
+    drops.forEach((drop: Drop) => {
+      const card = createDropCard(drop);
+      container.appendChild(card);
+    });
+
+    this.shadowRoot?.appendChild(container);
+  }
+}
+
+customElements.define('main-feed', MainFeed);
+export default MainFeed;
