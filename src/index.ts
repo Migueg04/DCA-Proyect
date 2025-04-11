@@ -22,3 +22,6 @@ if (!container) throw new Error("Contenedor de drops no encontrado");
   container.appendChild(card);
 });
 
+
+import './components/Sidebar'; 
+import './components/searchbar'
