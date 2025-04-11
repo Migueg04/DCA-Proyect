@@ -179,7 +179,7 @@ class TrendingPanel extends HTMLElement {
   <strong>${friend.name}</strong>
   <span>@${friend.username}</span>
 </div>
-                <button>+</button>
+                <button class="plus-btn">+</button>
               </li>
             `
 							)
@@ -198,7 +198,7 @@ class TrendingPanel extends HTMLElement {
                 <div class="overlay">
                   <h4>${item.title}</h4>
                   <p>${item.subtitle}</p>
-                  <button>+</button>
+                  <button class="plus-btn">+</button>
                 </div>
               </div>
             `
@@ -208,7 +208,15 @@ class TrendingPanel extends HTMLElement {
         </section>
       </div>
     `;
+    const plusButtons = this.shadowRoot!.querySelectorAll('.plus-btn');
+    plusButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        window.open('about:blank', '_blank');
+      });
+    });
+
 	}
 }
+
 
 customElements.define('trending-panel', TrendingPanel);
