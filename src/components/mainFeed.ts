@@ -3,7 +3,7 @@ import drops from "../data/drops.json";
 
 interface Drop {
     username: string;
-    verified: boolean;
+    verified: string;
     profileImage: string;
     content: string;
     image?: string;
