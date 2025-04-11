@@ -153,7 +153,7 @@ class TrendingPanel extends HTMLElement {
   .overlay button {
     position: absolute;
     bottom: 0.75rem;
-    right: 0.75rem;
+    right: 2.8rem;
     transform: translateX(-4px);
     background: #ff007f;
     border: none;
