@@ -23,7 +23,7 @@ class TrendingPanel extends HTMLElement {
   .trending-panel {
     position: fixed;
     top: 40px;
-    right: 40px;
+    right: 20px;
     width: 290px;
     background: #ffffff;
     color: #000;
