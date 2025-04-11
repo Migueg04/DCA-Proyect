@@ -126,7 +126,7 @@
   position: absolute;
   bottom: 0.75rem;
   right: 0.75rem;
-  transform: translateX(-4px); 
+  transform: translateX(-4px);
   background: #ff007f;
   border: none;
   border-radius: 50%;
@@ -135,4 +135,9 @@
   font-weight: bold;
   color: white;
   cursor: pointer;
+}
+@media (max-width: 768px) {
+  .trending-panel {
+    display: none !important;
+  }
 }

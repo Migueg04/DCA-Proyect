@@ -18,13 +18,13 @@ class TrendingPanel extends HTMLElement {
 	}
 
 	render(friends: Friend[], news: News[]) {
-    this.shadowRoot!.innerHTML = `
-      <style>
-        .trending-panel {
+		this.shadowRoot!.innerHTML = `
+     <style>
+  .trending-panel {
     position: fixed;
     top: 40px;
     right: 40px;
-    width: 290px;
+    width: 320px;
     background: #ffffff;
     color: #000;
     border-radius: 24px;
@@ -35,10 +35,16 @@ class TrendingPanel extends HTMLElement {
     z-index: 1000;
   }
 
+  @media (max-width: 768px) {
+    .trending-panel {
+      display: none;
+    }
+  }
+
   .friends h3,
   .news h3 {
     font-size: 0.9rem;
-    font-weight: 500;
+    font-weight: 600;
     color: #555;
     margin-bottom: 1rem;
     text-align: center;
@@ -147,7 +153,7 @@ class TrendingPanel extends HTMLElement {
   .overlay button {
     position: absolute;
     bottom: 0.75rem;
-    right: 2rem;
+    right: 0.75rem;
     transform: translateX(-4px);
     background: #ff007f;
     border: none;
@@ -159,11 +165,14 @@ class TrendingPanel extends HTMLElement {
     cursor: pointer;
   }
 </style>
+
       <div class="trending-panel">
         <section class="friends">
           <h3>Next-level gamers to follow</h3>
           <ul>
-            ${friends.map(friend => `
+            ${friends
+							.map(
+								(friend) => `
               <li class="friend">
                 <img src="${friend.avatar}" alt="${friend.name}" />
                 <div>
@@ -172,7 +181,9 @@ class TrendingPanel extends HTMLElement {
 </div>
                 <button>+</button>
               </li>
-            `).join('')}
+            `
+							)
+							.join('')}
           </ul>
           <button class="show-more">Show more</button>
         </section>
@@ -180,7 +191,9 @@ class TrendingPanel extends HTMLElement {
         <section class="news">
           <h3>#Trending</h3>
           <div class="news-list">
-            ${news.map(item => `
+            ${news
+							.map(
+								(item) => `
               <div class="news-card" style="background-image: url('${item.image}')">
                 <div class="overlay">
                   <h4>${item.title}</h4>
@@ -188,12 +201,14 @@ class TrendingPanel extends HTMLElement {
                   <button>+</button>
                 </div>
               </div>
-            `).join('')}
+            `
+							)
+							.join('')}
           </div>
         </section>
       </div>
     `;
-  }
+	}
 }
 
 customElements.define('trending-panel', TrendingPanel);
