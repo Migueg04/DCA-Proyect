@@ -43,7 +43,7 @@ class Comments extends HTMLElement {
                     
                     border-radius: 15px;
                     max-height: fit-content;
-                    width: 35vw;
+                    width: 40vw;
                     display: flex;
                     flex-direction: column;
                     justify-content: center;
@@ -103,10 +103,11 @@ class Comments extends HTMLElement {
                 }
 
 
-                @media (max-width:425px){
+                @media (max-width:426px){
                     #comments-container{
+                        
                         max-height: fit-content;
-                        width: 75vw;
+                        width: 80vw;
                     }
 
                     .message{
@@ -115,7 +116,7 @@ class Comments extends HTMLElement {
                     }
 
                     #comments{
-                        width: 75%;
+                        width: 80%;
                         height: 80%;
                     }
                     

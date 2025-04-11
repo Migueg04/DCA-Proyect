@@ -1,4 +1,4 @@
-interface Drop {
+export interface Drop {
   username: string;
   verified: string;
   profileImage: string;
