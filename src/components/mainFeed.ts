@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { createDropCard } from "./dropCard";
 import drops from "../data/drops.json"; 
 
@@ -16,3 +17,5 @@ drops.forEach((drop: Drop) => {
   const card = createDropCard(drop);
   container.appendChild(card);
 });
+=======
+>>>>>>> feature/trending
