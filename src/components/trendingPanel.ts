@@ -214,7 +214,7 @@ class TrendingPanel extends HTMLElement {
         window.open('about:blank', '_blank');
       });
     });
-    
+
     const showMoreBtn = this.shadowRoot!.querySelector('.show-more');
     showMoreBtn?.addEventListener('click', () => {
       window.open('about:blank', '_blank');
@@ -224,3 +224,4 @@ class TrendingPanel extends HTMLElement {
 
 
 customElements.define('trending-panel', TrendingPanel);
+export default TrendingPanel;
