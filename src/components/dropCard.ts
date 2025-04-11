@@ -15,7 +15,7 @@ export function createDropCard(drop: Drop): HTMLElement {
   card.innerHTML = `
     <style>
       .drop-card-wrapper {
-        width: 100%;
+        width: 70vw;
         display: flex;
         flex-direction: column;
         align-items: center;

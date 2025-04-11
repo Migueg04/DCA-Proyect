@@ -7,10 +7,10 @@ class TrendingPanel extends HTMLElement {
 	}
 
 	async connectedCallback() {
-		const friends = await this.fetchJSON('../../src/data/friends.json');
-		const news = await this.fetchJSON('../../src/data/news.json');
-		this.render(friends, news);
-	}
+    const friends = await this.fetchJSON('/data/friends.json');
+    const news = await this.fetchJSON('/data/news.json');
+    this.render(friends, news);
+  }
 
 	async fetchJSON(path: string) {
 		const response = await fetch(path);
@@ -24,7 +24,7 @@ class TrendingPanel extends HTMLElement {
     position: fixed;
     top: 40px;
     right: 40px;
-    width: 320px;
+    width: 290px;
     background: #ffffff;
     color: #000;
     border-radius: 24px;
