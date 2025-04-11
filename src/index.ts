@@ -1,4 +1,5 @@
 import './components/trendingPanel';
+import TrendingPanel from './components/trendingPanel';
 
 import Comments from "./components/comments/comments";
 import Button from "./components/dropButton/dropButton";
