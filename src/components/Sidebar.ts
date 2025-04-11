@@ -36,101 +36,116 @@ export enum SidebarAttribute {
       if (!this.shadowRoot) return;
   
       this.shadowRoot.innerHTML = `
-        <style>
-  :host {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: space-between;
-    background-color: #ec4899;
-    width: 64px;
-    height: 100vh;
-    padding: 1rem 0;
-    box-sizing: border-box;
-    font-family: sans-serif;
-    border-radius: 20px;
-    position: fixed;
-    left: 0;
-    top: 0;
-  }
+    <style>
+        :host {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: space-between;
+          background-color: #ec4899;
+          width: 64px;
+          height: 100vh;
+          padding: 1rem 0;
+          box-sizing: border-box;
+          font-family: sans-serif;
+          border-radius: 20px;
+          position: fixed;
+          left: 0;
+          top: 0;
+        }
 
-  .top-icons {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.4rem;
-    width: 100%;
-  }
+        .icons {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+        }
 
-  .top-icons a,
-  .top-icons button {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100%;  
-    height: 40px;
-  }
+        .top-icons {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 0.4rem;
+          width: 100%;
+        }
 
-  .top-icons img {
-    width: 24px;
-    height: 24px;
-  }
+        .top-icons a {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 100%;
+          height: 40px;
+          cursor: pointer;
+        }
 
-  .profile {
-    width: 44px;
-    height: 44px;
-    border-radius: 50%;
-    overflow: hidden;
-    border: 2px solid white;
-    margin-bottom: 0.5rem;
-  }
+        .top-icons img {
+          width: 24px;
+          height: 24px;
+        }
 
-  .profile img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
+        .profile {
+          width: 44px;
+          height: 44px;
+          border-radius: 50%;
+          overflow: hidden;
+          border: 2px solid white;
+          margin-bottom: 0.5rem;
+        }
 
-  @media (max-width: 600px) {
-    :host {
-      flex-direction: row;
-      width: 100%;
-      height: auto;
-      border-radius: 0;
-      padding: 0.5rem;
-      top: auto;
-      bottom: 0;
-    }
+        .profile img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+        }
 
-    .top-icons {
-      flex-direction: row;
-      gap: 0.4rem;
-    }
+        @media (max-width: 600px) {
+          :host {
+            flex-direction: row;
+            width: 100%;
+            height: auto;
+            border-radius: 0;
+            padding: 0.5rem;
+            top: auto;
+            bottom: 0;
+          }
 
-    .top-icons a,
-    .top-icons button {
-      width: 40px;
-    }
+          .top-icons {
+            flex-direction: row;
+            gap: 0.4rem;
+          }
 
-    .profile {
-      width: 36px;
-      height: 36px;
-      margin-bottom: 0;
-    }
-  }
-</style>
-    <div class="icons">
-    <img src="${this.home}" alt="Home Icon" class="icon" />
-    <img src="${this.add}" alt="Add Icon" class="icon" />
-    <img src="${this.bookmark}" alt="Bookmark Icon" class="icon" />
-    </div>
+          .top-icons a {
+            width: 40px;
+          }
 
-    <div class="profile">
-      <img src="${this.profileimg ?? ''}" alt="Profile" />
-    </div>
-  `;
+          .profile {
+            width: 36px;
+            height: 36px;
+            margin-bottom: 0;
+          }
+        }
+      </style>
+  <div class="icons">
+        <div class="top-icons">
+          <a class="icon-link" data-target="logo"><img src="${this.logo}" alt="Logo Icon" class="icon" /></a>
+          <a class="icon-link" data-target="home"><img src="${this.home}" alt="Home Icon" class="icon" /></a>
+          <a class="icon-link" data-target="add"><img src="${this.add}" alt="Add Icon" class="icon" /></a>
+          <a class="icon-link" data-target="bookmark"><img src="${this.bookmark}" alt="Bookmark Icon" class="icon" /></a>
+        </div>
+      </div>
+
+      <div class="profile">
+        <img src="${this.profileimg ?? ''}" alt="Profile" />
+      </div>
+    `;
+  const iconLinks = this.shadowRoot.querySelectorAll('.icon-link');
+  iconLinks.forEach(link => {
+    link.addEventListener('click', e => {
+      e.preventDefault();
+      window.open('about:blank', '_blank');
+    });
+  });
 }
-  }
+}
   
   customElements.define('side-bar', Sidebar);
   export default Sidebar;
