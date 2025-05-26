@@ -1,6 +1,5 @@
 import { NavigateActions } from "../../Flux/Actions";
 import { State, store } from "../../Flux/Store";
-import Navigate from "../../utils/Navigate";
 
 class Root extends HTMLElement {
   constructor() {

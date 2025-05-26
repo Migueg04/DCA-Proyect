@@ -1,6 +1,6 @@
 export type Action = {
   type: string;
-  payload?: any;
+  payload?: string | boolean | number | object;
 };
 
 type Callback = (action: Action) => void;

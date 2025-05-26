@@ -59,90 +59,107 @@ class Store {
   }
 
   private _handleNavigate(action: Action): void {
-    if (action.payload?.path) {
+    if (typeof action.payload === 'object' && action.payload !== null && 'path' in action.payload) {
+      const { path } = action.payload as { path: string };
       this._myState = {
         ...this._myState,
-        currentPath: action.payload.path
+        currentPath: path
+      };
+      this._emitChange();
+      this.persist();
+    }
+  }
+  
+  private _handleSetCurrentUser(action: Action): void {
+    if (typeof action.payload === 'object' && action.payload !== null && 'user' in action.payload) {
+      const { user } = action.payload as { user: User };
+      this._myState = {
+        ...this._myState,
+        currentUser: user,
+        isAuthenticated: user !== null,
+        error: null
       };
       this._emitChange();
       this.persist();
     }
   }
 
-  private _handleSetCurrentUser(action: Action): void {
-    const { user } = action.payload;
-    this._myState = {
-      ...this._myState,
-      currentUser: user,
-      isAuthenticated: user !== null,
-      error: null
-    };
-    this._emitChange();
-    this.persist();
-  }
-
   private _handleUpdateUserProfile(action: Action): void {
-    const { userId, updates } = action.payload;
-    
-    // Actualizar en el array de usuarios
-    const updatedUsers = this._myState.users.map(user =>
-      user.id === userId ? { ...user, ...updates } : user
-    );
+    if (
+      typeof action.payload === 'object' &&
+      action.payload !== null &&
+      'userId' in action.payload &&
+      'updates' in action.payload
+    ) {
+      const { userId, updates } = action.payload as { userId: string; updates: Partial<User> };
 
-    // Actualizar usuario actual si es el mismo
-    let updatedCurrentUser = this._myState.currentUser;
-    if (this._myState.currentUser && this._myState.currentUser.id === userId) {
-      updatedCurrentUser = { ...this._myState.currentUser, ...updates };
-    }
+      const updatedUsers = this._myState.users.map(user =>
+        user.id === userId ? { ...user, ...updates } : user
+      );
 
-    this._myState = {
-      ...this._myState,
-      users: updatedUsers,
-      currentUser: updatedCurrentUser,
-      error: null
-    };
-    this._emitChange();
-    this.persist();
-  }
-
-  private _handleLoginUser(action: Action): void {
-    const { email, password } = action.payload;
-    this._myState = {
-      ...this._myState,
-      isLoading: true,
-      error: null
-    };
-    this._emitChange();
-
-    // Simulación de login - en una app real harías una llamada API
-    setTimeout(() => {
-      const user = this._myState.users.find(u => u.email === email);
-      
-      if (user) {
-        // Login exitoso
-        this._myState = {
-          ...this._myState,
-          currentUser: user,
-          isAuthenticated: true,
-          isLoading: false,
-          error: null
-        };
-      } else {
-        // Login fallido
-        this._myState = {
-          ...this._myState,
-          currentUser: null,
-          isAuthenticated: false,
-          isLoading: false,
-          error: 'Usuario no encontrado o credenciales incorrectas'
-        };
+      let updatedCurrentUser = this._myState.currentUser;
+      if (this._myState.currentUser && this._myState.currentUser.id === userId) {
+        updatedCurrentUser = { ...this._myState.currentUser, ...updates };
       }
+
+      this._myState = {
+        ...this._myState,
+        users: updatedUsers,
+        currentUser: updatedCurrentUser,
+        error: null
+      };
       this._emitChange();
       this.persist();
-    }, 1000);
+    }
+  }
+
+
+  private _handleLoginUser(action: Action): void {
+    if (
+      typeof action.payload === 'object' &&
+      action.payload !== null &&
+      'email' in action.payload &&
+      'password' in action.payload
+    ) {
+      const { email } = action.payload as { email: string; password: string };
+
+      this._myState = {
+        ...this._myState,
+        isLoading: true,
+        error: null
+      };
+      this._emitChange();
+
+      setTimeout(() => {
+        const user = this._myState.users.find(u => u.email === email);
+
+        if (user) {
+          this._myState = {
+            ...this._myState,
+            currentUser: user,
+            isAuthenticated: true,
+            isLoading: false,
+            error: null
+          };
+        } else {
+          this._myState = {
+            ...this._myState,
+            currentUser: null,
+            isAuthenticated: false,
+            isLoading: false,
+            error: 'Usuario no encontrado o credenciales incorrectas'
+          };
+        }
+        this._emitChange();
+        this.persist();
+      }, 1000);
+    }
   }
 
   private _handleLogoutUser(action: Action): void {
+    // Aunque no se usa, lo dejas en la firma para cumplir con el tipo
+    void action; // Evita advertencias de variable no usada
+
     this._myState = {
       ...this._myState,
       currentUser: null,
@@ -154,55 +171,57 @@ class Store {
   }
 
   private _handleAddUser(action: Action): void {
-    const { user } = action.payload;
-    
-    // Verificar si el usuario ya existe
-    const existingUser = this._myState.users.find(u => u.email === user.email);
-    
-    if (existingUser) {
-      this._myState = {
-        ...this._myState,
-        error: 'El usuario ya existe con este email'
-      };
-    } else {
-      this._myState = {
-        ...this._myState,
-        users: [...this._myState.users, user],
-        error: null
-      };
-    }
-    this._emitChange();
-    this.persist();
-  }
+    if (typeof action.payload === 'object' && action.payload !== null && 'user' in action.payload) {
+      const { user } = action.payload as { user: User };
+      const existingUser = this._myState.users.find(u => u.email === user.email);
 
-  private _handleGetUserByEmail(action: Action): void {
-    const { email } = action.payload;
-    this._myState = {
-      ...this._myState,
-      isLoading: true,
-      error: null
-    };
-    this._emitChange();
-
-    // Simulación de búsqueda - en una app real harías una llamada API
-    setTimeout(() => {
-      const user = this._myState.users.find(u => u.email === email);
-      
-      if (!user) {
+      if (existingUser) {
         this._myState = {
           ...this._myState,
-          isLoading: false,
-          error: 'Usuario no encontrado'
+          error: 'El usuario ya existe con este email'
         };
       } else {
         this._myState = {
           ...this._myState,
-          isLoading: false,
+          users: [...this._myState.users, user],
           error: null
         };
       }
       this._emitChange();
-    }, 500);
+      this.persist();
+    }
+  }
+
+  private _handleGetUserByEmail(action: Action): void {
+    if (typeof action.payload === 'object' && action.payload !== null && 'email' in action.payload) {
+      const { email } = action.payload as { email: string };
+
+      this._myState = {
+        ...this._myState,
+        isLoading: true,
+        error: null
+      };
+      this._emitChange();
+
+      setTimeout(() => {
+        const user = this._myState.users.find(u => u.email === email);
+
+        if (!user) {
+          this._myState = {
+            ...this._myState,
+            isLoading: false,
+            error: 'Usuario no encontrado'
+          };
+        } else {
+          this._myState = {
+            ...this._myState,
+            isLoading: false,
+            error: null
+          };
+        }
+        this._emitChange();
+      }, 500);
+    }
   }
 
   private _emitChange(): void {
