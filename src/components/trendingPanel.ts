@@ -1,4 +1,4 @@
-import { Friend, News } from '../types/types';
+import { Friend, News } from '../utils/types/types';
 
 class TrendingPanel extends HTMLElement {
 	constructor() {

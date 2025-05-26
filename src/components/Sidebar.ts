@@ -1,42 +1,45 @@
+import Navigate from "../utils/Navigate";
+
 export enum SidebarAttribute {
-    logo = 'logo',
-    home = 'home',
-    bookmark = 'bookmark',
-    add = 'add',
+  logo = 'logo',
+  home = 'home',
+  bookmark = 'bookmark',
+  add = 'add',
+  profileimg = 'profileimg',
+}
+
+class Sidebar extends HTMLElement {
+  logo?: string;
+  home?: string;
+  bookmark?: string;
+  add?: string;
+  profileimg?: string;
+
+  static get observedAttributes() {
+    return ['logo', 'home', 'bookmark', 'add', 'profileimg'];
   }
-  
-  class Sidebar extends HTMLElement {
-    logo?: string;
-    home?: string;
-    bookmark?: string;
-    add?: string;
-    profileimg?: string;
-  
-    static get observedAttributes() {
-      return ['logo', 'home', 'bookmark', 'add', 'profileimg'];
+
+  constructor() {
+    super();
+    this.attachShadow({ mode: 'open' });
+  }
+
+  attributeChangedCallback(prop: SidebarAttribute, _: string | null, newVal: string | null) {
+    if (newVal !== null) {
+      this[prop] = newVal;
     }
-  
-    constructor() {
-      super();
-      this.attachShadow({ mode: 'open' });
-    }
-  
-    attributeChangedCallback(prop: SidebarAttribute, _: string | null, newVal: string | null) {
-      if (newVal !== null) {
-        this[prop] = newVal;
-      }
-      this.render();
-    }
-  
-    connectedCallback() {
-      this.render();
-    }
-  
-    render() {
-      if (!this.shadowRoot) return;
-  
-      this.shadowRoot.innerHTML = `
-    <style>
+    this.render();
+  }
+
+  connectedCallback() {
+    this.render();
+  }
+
+  render() {
+    if (!this.shadowRoot) return;
+
+    this.shadowRoot.innerHTML = `
+      <style>
         :host {
           display: flex;
           flex-direction: column;
@@ -44,14 +47,15 @@ export enum SidebarAttribute {
           justify-content: space-between;
           background-color: #ec4899;
           width: 64px;
-          height: 100vh;
+          height: 80vh;
           padding: 1rem 0;
           box-sizing: border-box;
           font-family: sans-serif;
           border-radius: 20px;
           position: fixed;
-          left: 0;
-          top: 0;
+          left: 30px;
+          top: 50%;
+          transform: translateY(-50%);
         }
 
         .icons {
@@ -75,6 +79,12 @@ export enum SidebarAttribute {
           width: 100%;
           height: 40px;
           cursor: pointer;
+          transition: background-color 0.2s;
+        }
+
+        .top-icons a:hover {
+          background-color: rgba(255, 255, 255, 0.1);
+          border-radius: 8px;
         }
 
         .top-icons img {
@@ -89,6 +99,12 @@ export enum SidebarAttribute {
           overflow: hidden;
           border: 2px solid white;
           margin-bottom: 0.5rem;
+          cursor: pointer;
+          transition: transform 0.2s;
+        }
+
+        .profile:hover {
+          transform: scale(1.05);
         }
 
         .profile img {
@@ -123,30 +139,33 @@ export enum SidebarAttribute {
             margin-bottom: 0;
           }
         }
+      
       </style>
-  <div class="icons">
+      <div class="icons">
         <div class="top-icons">
-          <a class="icon-link" data-target="logo"><img src="${this.logo}" alt="Logo Icon" class="icon" /></a>
-          <a class="icon-link" data-target="home"><img src="${this.home}" alt="Home Icon" class="icon" /></a>
-          <a class="icon-link" data-target="add"><img src="${this.add}" alt="Add Icon" class="icon" /></a>
-          <a class="icon-link" data-target="bookmark"><img src="${this.bookmark}" alt="Bookmark Icon" class="icon" /></a>
+          <a class="icon-link" navigate-to="/"><img src="${this.logo}" alt="Logo Icon" class="icon" /></a>
+          <a class="icon-link" navigate-to="/login"><img src="${this.home}" alt="Home Icon" class="icon" /></a>
+          <a class="icon-link" navigate-to="/add"><img src="${this.add}" alt="Add Icon" class="icon" /></a>
+          <a class="icon-link" navigate-to="/bookmarks"><img src="${this.bookmark}" alt="Bookmark Icon" class="icon" /></a>
         </div>
       </div>
-
-      <div class="profile">
+      <div class="profile" navigate-to="/profile">
         <img src="${this.profileimg ?? ''}" alt="Profile" />
       </div>
     `;
-  const iconLinks = this.shadowRoot.querySelectorAll('.icon-link');
-  iconLinks.forEach(link => {
-    link.addEventListener('click', e => {
-      e.preventDefault();
-      window.open('about:blank', '_blank');
+
+    // Agregar event listeners a todos los elementos con navigate-to
+    this.shadowRoot.querySelectorAll('[navigate-to]').forEach(element => {
+      element.addEventListener('click', (e) => {
+        e.preventDefault();
+        const path = element.getAttribute('navigate-to');
+        if (path) {
+          Navigate(path);
+        }
+      });
     });
-  });
+  }
 }
-}
-  
-  customElements.define('side-bar', Sidebar);
-  export default Sidebar;
-  
+
+customElements.define('side-bar', Sidebar);
+export default Sidebar;
