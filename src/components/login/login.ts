@@ -54,6 +54,7 @@ export class LoginForm extends HTMLElement {
           
           font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         }
+
         .login-container {
           border-radius: 20px;
           padding: 40px;
@@ -91,7 +92,7 @@ export class LoginForm extends HTMLElement {
           background: rgba(255, 255, 255, 0.1);
           border: 1px solid rgba(255, 255, 255, 0.2);
           border-radius: 12px;
-          padding: 15px 18px;
+          padding: 10px 15px;
           color: white;
           font-size: 16px;
           outline: none;

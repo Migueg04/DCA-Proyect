@@ -16,6 +16,7 @@ export const UserActionsType = {
 export interface User {
   id: string;
   email: string;
+  password: string; 
   name: string;
   username: string;
   bio: string;

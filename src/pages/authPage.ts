@@ -6,25 +6,23 @@ export class AuthPage extends HTMLElement {
     this.attachShadow({ mode: 'open' });
   }
 
-  connectedCallback() {
+    connectedCallback() {
     this.render();
-    this.attachEvents();
 
     this.addEventListener('change-view', (e: Event) => {
-      const customEvent = e as CustomEvent;
-      if (customEvent.detail === 'register') {
+        const customEvent = e as CustomEvent;
+        if (customEvent.detail === 'register') {
         this.switchMode('register');
-      } else if (customEvent.detail === 'login') {
+        } else if (customEvent.detail === 'login') {
         this.switchMode('login');
-      }
+        }
     });
-  }
+    }
 
-  switchMode(mode: 'login' | 'register') {
-    this.mode = mode;
-    this.render();
-    this.attachEvents();
-  }
+    switchMode(mode: 'login' | 'register') {
+        this.mode = mode;
+        this.render();
+    }
 
   attachEvents() {
     this.shadowRoot?.querySelector('#login-tab')?.addEventListener('click', () => this.switchMode('login'));
@@ -34,6 +32,7 @@ export class AuthPage extends HTMLElement {
   render() {
     this.shadowRoot!.innerHTML = `
       <style>
+      
         .tabs { display: flex; gap: 10px; margin-bottom: 10px; }
         .tabs button { padding: 8px 16px; }
 

@@ -113,7 +113,6 @@ class Store {
     }
   }
 
-
   private _handleLoginUser(action: Action): void {
     if (
       typeof action.payload === 'object' &&
@@ -157,8 +156,7 @@ class Store {
   }
 
   private _handleLogoutUser(action: Action): void {
-    // Aunque no se usa, lo dejas en la firma para cumplir con el tipo
-    void action; // Evita advertencias de variable no usada
+    void action;
 
     this._myState = {
       ...this._myState,
@@ -173,22 +171,33 @@ class Store {
   private _handleAddUser(action: Action): void {
     if (typeof action.payload === 'object' && action.payload !== null && 'user' in action.payload) {
       const { user } = action.payload as { user: User };
-      const existingUser = this._myState.users.find(u => u.email === user.email);
 
-      if (existingUser) {
+      // Asegurar que users sea un array válido
+      const users = Array.isArray(this._myState.users) ? this._myState.users : [];
+
+      const emailExists = users.some(u => u.email === user.email);
+      const usernameExists = users.some(u => u.username === user.username);
+
+      if (emailExists) {
         this._myState = {
           ...this._myState,
-          error: 'El usuario ya existe con este email'
+          error: 'Ya existe un usuario con este correo electrónico'
+        };
+      } else if (usernameExists) {
+        this._myState = {
+          ...this._myState,
+          error: 'El nombre de usuario ya está en uso'
         };
       } else {
         this._myState = {
           ...this._myState,
-          users: [...this._myState.users, user],
+          users: [...users, user],
           error: null
         };
+        this.persist();
       }
+
       this._emitChange();
-      this.persist();
     }
   }
 
@@ -248,10 +257,21 @@ class Store {
     const persistedState = localStorage.getItem('flux:state');
     if (persistedState) {
       try {
-        this._myState = JSON.parse(persistedState);
+        const loadedState = JSON.parse(persistedState);
+        
+        // Validar y fusionar el estado cargado con el estado inicial
+        this._myState = {
+          currentPath: loadedState.currentPath || '/',
+          currentUser: loadedState.currentUser || null,
+          users: Array.isArray(loadedState.users) ? loadedState.users : [],
+          isLoading: false,
+          error: null,
+          isAuthenticated: loadedState.currentUser !== null && loadedState.currentUser !== undefined
+        };
       } catch (error) {
         console.error('Error loading persisted state:', error);
-        // Si hay error al parsear, mantener el estado inicial
+        // Si hay error al parsear, limpiar localStorage y mantener el estado inicial
+        localStorage.removeItem('flux:state');
       }
     }
   }
@@ -262,15 +282,17 @@ class Store {
   }
 
   getUsers(): User[] {
-    return this._myState.users;
+    return Array.isArray(this._myState.users) ? this._myState.users : [];
   }
 
   getUserById(id: string): User | undefined {
-    return this._myState.users.find(user => user.id === id);
+    const users = this.getUsers();
+    return users.find(user => user.id === id);
   }
 
   getUserByEmail(email: string): User | undefined {
-    return this._myState.users.find(user => user.email === email);
+    const users = this.getUsers();
+    return users.find(user => user.email === email);
   }
 
   isUserAuthenticated(): boolean {

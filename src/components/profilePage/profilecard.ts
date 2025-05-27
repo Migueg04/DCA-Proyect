@@ -38,7 +38,7 @@ class ProfileCard extends HTMLElement {
   }
 
   render() {
-  if (!this.shadowRoot) return;
+    if (!this.shadowRoot) return;
 
     this.shadowRoot.innerHTML = `
         <style>
@@ -47,7 +47,7 @@ class ProfileCard extends HTMLElement {
             justify-content: center;
             align-items: center;
             width: 90%;
-            height: 90%;
+            height: 100%;
             box-sizing: border-box;
             overflow: hidden;
         }
@@ -60,9 +60,8 @@ class ProfileCard extends HTMLElement {
             background-color: rgba(255, 255, 255, 0.6);
             overflow: hidden;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
-            height: 90%;
+            height: 80%;
             position: relative;
-            
         }
 
         .header {
@@ -120,15 +119,20 @@ class ProfileCard extends HTMLElement {
             color: #666;
             margin-bottom: 0.75rem;
             font-size: 17px;
+            margin-bottom: 1%;
+        }
+
+        .age {
+            color: #666;
+            font-size: 16px;
             margin-bottom: 3%;
         }
 
         .bio {
             font-size: 17px;
-            margin-bottom: 15%;
+            margin-bottom: 10%;
             color: #333;
             line-height: 1.4;
-            
         }
 
         .footer {
@@ -141,24 +145,24 @@ class ProfileCard extends HTMLElement {
         </style>
 
         <div class="container">
-        <div class="header" style="background-image: url(${this.bgimg})">
-            <div class="profile-img">
-            <img src="${this.profileimg}" alt="Profile Picture" />
+            <div class="header" style="background-image: url(${this.bgimg})">
+                <div class="profile-img">
+                    <img src="${this.profileimg}" alt="Profile Picture" />
+                </div>
+                <button class="edit-button">⚙Edit profile</button>
             </div>
-            <button class="edit-button">⚙Edit profile</button>
-        </div>
-        <div class="body">
-            <div class="name">${this.name ?? ''}</div>
-            <div class="username">@${this.username ?? ''}</div>
-            <div class="bio">${this.bio ?? ''}</div>
-            <div class="footer">
-                <span>Friends: ${this.friends ?? ''}</span>
+            <div class="body">
+                <div class="name">${this.name ?? ''}</div>
+                <div class="username">@${this.username ?? ''}</div>
+                <div class="age">${this.age ? `${this.age} years old` : ''}</div>
+                <div class="bio">${this.bio ?? ''}</div>
+                <div class="footer">
+                    <span>Friends: ${this.friends ?? ''}</span>
+                </div>
             </div>
-        </div>
         </div>
     `;
-    }
-
-
+  }
 }
+
 export default ProfileCard;
