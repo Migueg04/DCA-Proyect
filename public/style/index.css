@@ -9,8 +9,13 @@ body {
     background-color: #10062B;
     font-family: "Nunito", sans-serif;
     display: flex;
-    justify-content: center; 
+    justify-content: center;
     padding: 2rem;
     min-height: 100vh;
     overflow-y: auto;
+}
+
+comments-component {
+  display: block;
+  width: 100%;
 }

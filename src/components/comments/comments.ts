@@ -1,46 +1,49 @@
-import comentarios from '../../data/comments.json'; 
+import comentarios from '../../data/comments.json';
 
 type commentsRespuesta = {
-    username: string;
-    verified: string;
-    content: string;
+	username: string;
+	verified: string;
+	content: string;
 };
 
 class Comments extends HTMLElement {
+	constructor() {
+		super();
+	}
 
-    constructor() {
-        super();
-    }
+	connectedCallback() {
+		this.render();
+		this.addEventListener('button-click', () => {
+			const input = this.querySelector('#input-comments-textfield') as HTMLInputElement | null;
+			if (input) {
+				console.log('Esto es un comentario nuevo:', input.value);
+			}
+		});
+	}
 
-    connectedCallback() {
-        this.render();
-        this.addEventListener("button-click", () => {
-            const input = this.querySelector("#input-comments-textfield") as HTMLInputElement | null;
-            if (input) {
-                console.log("Esto es un comentario nuevo:", input.value);
-            }
-        });
-    }
+	getRandomComments(): commentsRespuesta[] {
+		const shuffled = [...comentarios].sort(() => Math.random() - 0.5);
+		return shuffled.slice(0, 3);
+	}
 
-    getRandomComments(): commentsRespuesta[] {
-        const shuffled = [...comentarios].sort(() => Math.random() - 0.5);
-        return shuffled.slice(0, 3);
-    }
-
-    render() {
-        const randomComments = this.getRandomComments();
-        const comentariosHTML = randomComments.map((comment: commentsRespuesta) => `
+	render() {
+		const randomComments = this.getRandomComments();
+		const comentariosHTML = randomComments
+			.map(
+				(comment: commentsRespuesta) => `
             <div class="username">
                 <p>${comment.username}</p>
                 <img src="${comment.verified}" alt="verified" class="verified-icon" />
             </div>
             <div class="message">${comment.content}</div>
-        `).join("");
+        `
+			)
+			.join('');
 
-        this.innerHTML = `
+		this.innerHTML = `
             <style>
                 #comments-container{
-                    
+
                     border-radius: 15px;
                     max-height: fit-content;
                     width: 40vw;
@@ -99,13 +102,13 @@ class Comments extends HTMLElement {
                     font-weight: 500;
                     width: 75%;
                     padding: 10px;
-                    
+
                 }
 
 
                 @media (max-width:426px){
                     #comments-container{
-                        
+
                         max-height: fit-content;
                         width: 80vw;
                     }
@@ -119,7 +122,7 @@ class Comments extends HTMLElement {
                         width: 80%;
                         height: 80%;
                     }
-                    
+
                     #input-comments{
                         margin-top: 20px;
                         display: flex;
@@ -141,7 +144,7 @@ class Comments extends HTMLElement {
                         color: white;
                         cursor: pointer;
                         font-size: 12px;
-                        height: 100%;  
+                        height: 100%;
                     }
 
                     input{
@@ -153,11 +156,12 @@ class Comments extends HTMLElement {
                         outline: none;
                         font-size: 12px;
                         background-color: #ffffff;
-                        color: #100c2a; 
+                        color: #100c2a;
                         font-weight: 500;
                         width: 70%;
                         height: 56%;
                     }
+            }
             </style>
             <div id="comments-container">
                 <div id="comments">
@@ -169,8 +173,7 @@ class Comments extends HTMLElement {
                 </div>
             </div>
         `;
-    }
-
+	}
 }
 
 export default Comments;

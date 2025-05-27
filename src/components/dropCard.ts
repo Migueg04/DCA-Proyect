@@ -1,3 +1,5 @@
+// src/components/dropCard.ts
+
 export interface Drop {
   username: string;
   verified: string;
@@ -16,6 +18,7 @@ export function createDropCard(drop: Drop): HTMLElement {
     <style>
       .drop-card-wrapper {
         width: 70vw;
+        max-width: 900px;
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -87,17 +90,28 @@ export function createDropCard(drop: Drop): HTMLElement {
         color: white;
       }
 
-      .comment-button {
-        background: none;
-        border: none;
-        padding: 0;
-        cursor: pointer;
-      }
-
       .drop-actions {
         display: flex;
         gap: 2%;
         padding-top: 30px;
+      }
+
+      .comment-button {
+        background: none;
+        border: none;
+        padding: 8px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        transition: background 0.2s ease;
+      }
+
+      .comment-button:hover {
+        background: rgba(255, 255, 255, 0.1);
       }
 
       .comments-container {
@@ -151,7 +165,7 @@ export function createDropCard(drop: Drop): HTMLElement {
         <p class="drop-text">${drop.content}</p>
 
         <div class="drop-actions">
-          <button class="comment-button" type="button">
+          <button class="comment-button" data-action="toggle-comments" type="button" title="Ver comentarios">
             <i class="fa-regular fa-comment fa-xl" style="color: #ffffff;"></i>
           </button>
           <button class="comment-button" type="button">
@@ -169,18 +183,16 @@ export function createDropCard(drop: Drop): HTMLElement {
     </div>
   `;
 
-  const commentButton = card.querySelector(".comment-button");
+  const toggleButton = card.querySelector('[data-action="toggle-comments"]');
   const commentsContainer = card.querySelector(`#${uniqueId}`);
 
-  if (commentButton && commentsContainer) {
+  if (toggleButton && commentsContainer) {
     let commentsVisible = false;
-    commentButton.addEventListener("click", () => {
+    toggleButton.addEventListener("click", () => {
       commentsVisible = !commentsVisible;
       commentsContainer.classList.toggle("show", commentsVisible);
     });
   }
-
-
 
   return card;
 }
