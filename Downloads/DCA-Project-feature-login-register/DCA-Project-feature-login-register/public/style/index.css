@@ -1,0 +1,16 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: #10062B;
+  font-family: "Nunito", sans-serif;
+  display: flex;
+  justify-content: center;
+  /* Cambié padding por margin o lo eliminé */
+  margin: 0;
+  height: 100vh;
+  overflow-y: auto;
+}

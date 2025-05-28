@@ -1,0 +1,32 @@
+{
+	"name": "dca_proyect",
+	"version": "1.0.0",
+	"main": "index.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1",
+		"build": "webpack --mode=production",
+		"start": "webpack serve --mode=development --open",
+		"lint": "eslint src/ --ext .ts,.js --report-unused-disable-directives",
+		"lint:fix": "eslint src/ --ext .ts,.js --report-unused-disable-directives --fix",
+		"prepare": "husky"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"description": "",
+	"type": "module",
+	"devDependencies": {
+		"@eslint/js": "^9.22.0",
+		"copy-webpack-plugin": "^13.0.0",
+		"css-loader": "^7.1.2",
+		"eslint": "^9.22.0",
+		"globals": "^16.0.0",
+		"husky": "^9.1.7",
+		"ts-loader": "^9.5.2",
+		"typescript": "^5.8.2",
+		"typescript-eslint": "^8.26.1",
+		"webpack": "^5.98.0",
+		"webpack-cli": "^6.0.1",
+		"webpack-dev-server": "^5.2.0"
+	}
+}

@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "resolveJsonModule": true,
+      "target": "ESNext", // Cambiar a ESNext
+      "module": "CommonJS", // Cambiar a commonjs
+      "strict": true, // Es recomendable activar el modo estricto
+      "esModuleInterop": true, // Habilitar la interoperabilidad de módulos
+      "skipLibCheck": true, // Omitir la comprobación de librerías
+      "forceConsistentCasingInFileNames": true, // Forzar la consistencia en los nombres de archivo, útil para evitar errores en sistemas de archivos que no distinguen entre mayúsculas y minúsculas
+      "outDir": "./dist", // Directorio de salida
+      
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist"]
+}
+
