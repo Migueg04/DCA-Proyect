@@ -156,6 +156,7 @@ class Store {
     };
     this._emitChange();
     this.persist();
+    console.log(_)
   }
 
   private _handleAddUser(action: Action): void {
