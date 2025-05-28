@@ -49,6 +49,7 @@ class ProfileCard extends HTMLElement {
             width: 90%;
             height: 100%;
             box-sizing: border-box;
+            backgorund-color: #ffffff;
             overflow: hidden;
         }
 
@@ -158,6 +159,7 @@ class ProfileCard extends HTMLElement {
                 <div class="bio">${this.bio ?? ''}</div>
                 <div class="footer">
                     <span>Friends: ${this.friends ?? ''}</span>
+                    <log-out-btn></log-out-btn>
                 </div>
             </div>
         </div>

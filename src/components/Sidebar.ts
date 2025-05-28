@@ -144,7 +144,7 @@ class Sidebar extends HTMLElement {
       <div class="icons">
         <div class="top-icons">
           <a class="icon-link" navigate-to="/"><img src="${this.logo}" alt="Logo Icon" class="icon" /></a>
-          <a class="icon-link" navigate-to="/login"><img src="${this.home}" alt="Home Icon" class="icon" /></a>
+          <a class="icon-link" navigate-to="/"><img src="${this.home}" alt="Home Icon" class="icon" /></a>
           <a class="icon-link" navigate-to="/add"><img src="${this.add}" alt="Add Icon" class="icon" /></a>
           <a class="icon-link" navigate-to="/bookmarks"><img src="${this.bookmark}" alt="Bookmark Icon" class="icon" /></a>
         </div>

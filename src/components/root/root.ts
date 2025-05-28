@@ -56,6 +56,7 @@ class Root extends HTMLElement {
     const state = store.getState();
     const currentPath = state.currentPath || window.location.pathname;
     const isAuthPage = currentPath === '/auth';
+    const isProfilePage = currentPath === '/profile';
 
     this.shadowRoot.innerHTML = `
       <style>
@@ -66,6 +67,9 @@ class Root extends HTMLElement {
           padding: 0;
           box-sizing: border-box;
           display: flex;
+          ${isProfilePage ? `
+          background: linear-gradient(180deg, rgba(235, 59, 132, 0.6) 0%, rgba(16, 6, 43, 0.8) 80%);
+        ` : ''}
         }
         
         #content {

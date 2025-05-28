@@ -14,6 +14,7 @@ class ProfilePage extends HTMLElement {
 
   handleStateChange(state: State) {
     this.render();
+    console.log(state);
   }
 
   render() {
@@ -36,15 +37,26 @@ class ProfilePage extends HTMLElement {
     const friends = currentUser?.friends || "0";
 
     this.shadowRoot.innerHTML = `
-      <profilecard-component
-        bgimg="${bgimg}"
-        profileimg="${profileimg}"
-        name="${name}"
-        username="${username}"
-        bio="${bio}"
-        age="${age}"
-        friends="${friends}"
-      ></profilecard-component>
+      <style>
+        .container {
+          width: 100%;
+          height: 100%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+      </style>
+      <div class="container">
+        <profilecard-component
+          bgimg="${bgimg}"
+          profileimg="${profileimg}"
+          name="${name}"
+          username="${username}"
+          bio="${bio}"
+          age="${age}"
+          friends="${friends}"
+        ></profilecard-component>
+      </div>
     `;
   }
 }

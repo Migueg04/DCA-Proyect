@@ -26,6 +26,7 @@ export class LoginForm extends HTMLElement {
     const password = (form.querySelector('#password') as HTMLInputElement).value;
     UserActions.loginUser(email, password);
   }
+  
   render() {
     this.shadowRoot!.innerHTML = `
       <style>
@@ -40,13 +41,9 @@ export class LoginForm extends HTMLElement {
           justify-content: center;
           align-items: center;
           min-height: 100vh;
-          
-          /* Opción 2: Imagen + degradado superpuesto (recomendado) */
           background: 
             linear-gradient(180deg,rgba(235, 59, 132, 0.6) 0%, rgba(16, 6, 43, 0.8) 80%),
             url('https://i.postimg.cc/6QSzRvFf/image-43.png');
-          
-          /* Propiedades para la imagen de fondo */
           background-size: cover;
           background-position: center;
           background-repeat: no-repeat;
