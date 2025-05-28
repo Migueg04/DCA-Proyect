@@ -14,6 +14,7 @@ import AuthContainer from "./pages/authPage";
 import LoginForm from "./components/login/login";
 import RegisterForm from "./components/login/register";
 import LogOutBtn from "./components/profilePage/logOutBtn";
+import RightBar from "./components/profilePage/friendsBar";
 
 
 customElements.define("comments-component", Comments);
@@ -27,4 +28,6 @@ customElements.define('profile-page', ProfilePage)
 customElements.define('profilecard-component', ProfileCard);
 customElements.define ('register-form', RegisterForm)
 customElements.define('log-out-btn', LogOutBtn);
+customElements.define('right-bar', RightBar);
+
 

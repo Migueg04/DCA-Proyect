@@ -176,9 +176,9 @@ class TrendingPanel extends HTMLElement {
               <li class="friend">
                 <img src="${friend.avatar}" alt="${friend.name}" />
                 <div>
-  <strong>${friend.name}</strong>
-  <span>@${friend.username}</span>
-</div>
+                  <strong>${friend.name}</strong>
+                  <span>@${friend.username}</span>
+                </div>
                 <button class="plus-btn">+</button>
               </li>
             `

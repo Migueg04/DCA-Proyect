@@ -8,7 +8,6 @@ class ProfilePage extends HTMLElement {
 
   connectedCallback() {
     this.render();
-    // Suscribirse a cambios en el store
     store.subscribe(this.handleStateChange.bind(this));
   }
 
@@ -23,11 +22,9 @@ class ProfilePage extends HTMLElement {
     const state = store.getState();
     const currentUser = state.currentUser;
 
-    // Valores por defecto si no hay usuario
     const defaultBgImg = "https://global.unitednations.entermediadb.net/assets/mediadb/services/module/asset/downloads/preset/Libraries/Graphics+Library/27-05-2022-Videogames-climate-05.jpg/image1440x560cropped.jpg";
     const defaultProfileImg = "https://i.pinimg.com/736x/e0/5a/19/e05a1996300035d853b03f8af6ce0c4a.jpg";
 
-    // Obtener datos del usuario actual o usar valores por defecto
     const bgimg = currentUser?.bgimg || defaultBgImg;
     const profileimg = currentUser?.profileimg || defaultProfileImg;
     const name = currentUser?.name || "Usuario";
@@ -39,13 +36,15 @@ class ProfilePage extends HTMLElement {
     this.shadowRoot.innerHTML = `
       <style>
         .container {
-          width: 100%;
+          margin-right: 100px; /* deja espacio para el right-bar */
+          width: calc(100% - 100px);
           height: 100%;
           display: flex;
           align-items: center;
           justify-content: center;
         }
       </style>
+      <right-bar></right-bar>
       <div class="container">
         <profilecard-component
           bgimg="${bgimg}"

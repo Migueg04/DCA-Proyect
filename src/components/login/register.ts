@@ -1,22 +1,30 @@
 import { UserActions, NavigateActions } from "../../Flux/Actions";
 
-function generateId() {
-  return crypto.randomUUID();
-}
-
-function calculateAge(birthdate: string): string {
-  const today = new Date();
-  const birth = new Date(birthdate);
-  let age = today.getFullYear() - birth.getFullYear();
-  const monthDiff = today.getMonth() - birth.getMonth();
-  
-  if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
-    age--;
+  function generateId() {
+    return crypto.randomUUID();
   }
-  
-  return age.toString();
-}
 
+  function calculateAge(birthdate: string): string {
+    const today = new Date();
+    const birth = new Date(birthdate);
+    let age = today.getFullYear() - birth.getFullYear();
+    const monthDiff = today.getMonth() - birth.getMonth();
+    
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
+      age--;
+    }
+    
+    return age.toString();
+  }
+
+  function isValidPassword(password: string): boolean {
+    const minLength = 8;
+    const hasUpper = /[A-Z]/.test(password);
+    const hasLower = /[a-z]/.test(password);
+    const hasNumber = /[0-9]/.test(password);
+    const hasSymbol = /[^A-Za-z0-9]/.test(password);
+    return password.length >= minLength && hasUpper && hasLower && hasNumber && hasSymbol;
+  }
 export class RegisterForm extends HTMLElement {
   constructor() {
     super();
@@ -36,7 +44,7 @@ export class RegisterForm extends HTMLElement {
         });
     }
 
-    handleSubmit(event: Event) {
+  handleSubmit(event: Event) {
     event.preventDefault();
     const form = event.target as HTMLFormElement;
 
@@ -44,38 +52,42 @@ export class RegisterForm extends HTMLElement {
     const confirmPassword = (form.querySelector('#confirm-password') as HTMLInputElement).value;
 
     if (password !== confirmPassword) {
-        alert("Passwords do not match");
-        return;
+      alert("Passwords do not match");
+      return;
+    }
+
+    if (!isValidPassword(password)) {
+      alert("Password must be at least 8 characters long and include uppercase, lowercase, number, and symbol.");
+      return;
     }
 
     const birthdate = (form.querySelector('#birthdate') as HTMLInputElement).value;
     const calculatedAge = calculateAge(birthdate);
 
     const newUser = {
-        id: generateId(),
-        email: (form.querySelector('#email') as HTMLInputElement).value,
-        name: (form.querySelector('#name') as HTMLInputElement).value,
-        username: (form.querySelector('#username') as HTMLInputElement).value,
-        password: password,
-        birthdate: birthdate,
-        bio: '',
-        age: calculatedAge, // Ahora calculamos la edad real
-        friends: '0',
-        profileimg: '',
-        bgimg: ''
+      id: generateId(),
+      email: (form.querySelector('#email') as HTMLInputElement).value,
+      name: (form.querySelector('#name') as HTMLInputElement).value,
+      username: (form.querySelector('#username') as HTMLInputElement).value,
+      password: password,
+      birthdate: birthdate,
+      bio: '',
+      age: calculatedAge,
+      friends: '0',
+      profileimg: '',
+      bgimg: ''
     };
 
     try {
-        UserActions.addUser(newUser);
-        UserActions.setCurrentUser(newUser);
-        
-        // Navegar a la página principal después del registro exitoso
-        NavigateActions.navigate('/');
+      UserActions.addUser(newUser);
+      UserActions.setCurrentUser(newUser);
+      NavigateActions.navigate('/');
     } catch (error) {
-        console.error('Error during registration:', error);
-        alert('Registration failed. Please try again.');
+      console.error('Error during registration:', error);
+      alert('Registration failed. Please try again.');
     }
-    }
+  }
+
 
   render() {
     this.shadowRoot!.innerHTML = `
