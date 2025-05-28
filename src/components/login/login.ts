@@ -61,9 +61,9 @@ export class LoginForm extends HTMLElement {
 
         .login-title {
           color: white;
-          font-size: 32px;
-          font-weight: 600;
-          margin-bottom: 30px;
+          font-size: 28px;
+          font-weight: 400;
+          margin-bottom: 20px;
           text-align: center;
         }
 
@@ -160,20 +160,89 @@ export class LoginForm extends HTMLElement {
           text-decoration: underline;
         }
 
+        .respawn-header {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          margin-bottom: 20px;
+        }
+
+        .respawn-logo {
+          width: 50px;
+          height: 50px;
+          margin-bottom: 10px;
+        }
+
+        .respawn-title {
+          color: white;
+          font-size: 60px;
+          font-weight: 900;
+          margin: 0;
+          font-family: "Nunito", sans-serif;
+        }
+
         @media (max-width: 480px) {
+          :host {
+            overflow-y: auto;
+            padding: 20px 0;
+            background-image: url('https://i.postimg.cc/tRc6sxS4/image-5.png');
+            background-size: cover; /* Asegura que cubra todo el contenedor */
+            background-position: center; /* Centra la imagen */
+            background-repeat: no-repeat;
+          }
           .login-container {
             margin: 20px;
-            padding: 30px 25px;
+            padding: 30px 20px;
           }
-          
+
+          .respawn-title {
+            font-size: 36px;
+          }
+
+          .respawn-logo {
+            width: 40px;
+            height: 40px;
+          }
+
           .login-title {
-            font-size: 28px;
+            font-size: 22px;
+          }
+
+          .login-button {
+            padding: 12px;
+            font-size: 14px;
+          }
+
+          input {
+            font-size: 14px;
+            padding: 8px 12px;
+          }
+
+          label {
+            font-size: 13px;
+          }
+
+          .signup-link {
+            font-size: 13px;
+          }
+
+          .forgot-password {
+            font-size: 11px;
           }
         }
+
+        }
       </style>
-      
+
       <div class="login-container">
+
+        <div class="respawn-header">
+          <img src="https://i.postimg.cc/G2c3BHmQ/logo-R.png" alt="Respawn Logo" class="respawn-logo">
+          <h1 class="respawn-title">Respawn</h1>
+        </div>
+
         <h1 class="login-title">Login</h1>
+        
         <form>
           <div class="input-group">
             <label for="email">Email id</label>

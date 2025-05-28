@@ -32,9 +32,10 @@ class RightBar extends HTMLElement {
 
         h1 {
           text-align: right;
-          margin: 0 0 32px 0; /* más espacio debajo del título */
+          margin: 30px 0 32px 0; /* más espacio debajo del título */
           font-size: 1.5rem;
           color: #333;
+          font-family: "Nunito", sans-serif;
         }
 
         .friends-container {
@@ -77,7 +78,7 @@ class RightBar extends HTMLElement {
       </style>
 
       <div class="right-bar">
-        <h1>FRIENDS</h1>
+        <h1>Friends</h1>
         <div class="friends-container">
           ${friends
             .map(

@@ -114,13 +114,16 @@ class ProfileCard extends HTMLElement {
             font-size: 30px;
             font-weight: bold;
             color: #1e1e1e;
+            font-family: "Nunito", sans-serif;
+
         }
 
         .username {
-            color: #666;
+            color: #ffffff;
             margin-bottom: 0.75rem;
             font-size: 17px;
             margin-bottom: 1%;
+            font-family: "Nunito", sans-serif;
         }
 
         .age {
@@ -134,6 +137,7 @@ class ProfileCard extends HTMLElement {
             margin-bottom: 10%;
             color: #333;
             line-height: 1.4;
+            font-family: "Nunito", sans-serif;
         }
 
         .footer {
