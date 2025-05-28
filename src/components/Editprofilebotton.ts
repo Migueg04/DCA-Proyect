@@ -1,3 +1,4 @@
+import Navigate from "../utils/Navigate";
 class EditProfileButton extends HTMLElement {
     constructor() {
     super();
@@ -6,6 +7,7 @@ class EditProfileButton extends HTMLElement {
 
     const style = document.createElement('style');
     style.textContent = `
+    <style>
     button {
         display: flex;
         align-items: center;
@@ -28,17 +30,22 @@ class EditProfileButton extends HTMLElement {
     .icon {
         font-size: 18px;
     }
+    </style>
+    <div class="Editprofile" navigate-to="/Editprofile"></div>
     `;
 
     const button = document.createElement('button');
     button.innerHTML = `<span class="icon">⚙️</span>Edit profile`;
 
-    button.addEventListener('click', () => {
-    ;
-    });
-
-    shadow.appendChild(style);
-    shadow.appendChild(button);
+    this.shadowRoot?.querySelectorAll('[navigate-to]').forEach(element => {
+        element.addEventListener('click', (e) => {
+            e.preventDefault();
+            const path = element.getAttribute('navigate-to');
+            if (path) {
+            Navigate(path);
+            }
+        });
+        });
     }
 }
 
