@@ -16,14 +16,24 @@ class MainFeed extends HTMLElement {
   }
 
   connectedCallback() {
-    const container = document.createElement('div');
+    this.render();
+    window.addEventListener('drop-added', () => this.render());
+  }
 
-    drops.forEach((drop: Drop) => {
+  render() {
+    const container = document.createElement('div');
+    container.innerHTML = ''; // limpiar contenido anterior
+
+    const localDrops = JSON.parse(localStorage.getItem('userDrops') || '[]');
+    const allDrops: Drop[] = [...localDrops, ...drops]; // nuevos primero
+
+    allDrops.forEach((drop: Drop) => {
       const card = createDropCard(drop);
       container.appendChild(card);
     });
 
-    this.shadowRoot?.appendChild(container);
+    this.shadowRoot!.innerHTML = ''; // limpiar todo
+    this.shadowRoot!.appendChild(container);
   }
 }
 

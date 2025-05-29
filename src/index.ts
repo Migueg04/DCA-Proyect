@@ -30,6 +30,8 @@ customElements.define('profilecard-component', ProfileCard);
 customElements.define ('register-form', RegisterForm)
 customElements.define('log-out-btn', LogOutBtn);
 customElements.define('right-bar', RightBar);
-customElements.define('create-drop-modal', CreateDropModal);
+if (!customElements.get('create-drop-modal')) {
+  customElements.define('create-drop-modal', CreateDropModal);
+}
 
 
