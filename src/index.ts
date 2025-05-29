@@ -29,5 +29,3 @@ customElements.define('profilecard-component', ProfileCard);
 customElements.define ('register-form', RegisterForm)
 customElements.define('log-out-btn', LogOutBtn);
 customElements.define('right-bar', RightBar);
-
-
