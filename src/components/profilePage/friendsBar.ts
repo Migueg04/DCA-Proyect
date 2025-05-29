@@ -75,6 +75,72 @@ class RightBar extends HTMLElement {
           font-size: 14px;
           color: #777;
         }
+
+        @media (max-width: 480px) {
+            .right-bar {
+                position: fixed;
+                top: auto;
+                bottom: 0;
+                right: 0;
+                width: 100%;
+                height: 120px;
+                padding: 12px 16px;
+                box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+                background-color: white;
+                display: flex;
+                flex-direction: column;
+                align-items: flex-start;
+                justify-content: flex-start;
+            }
+
+            h1 {
+                text-align: center;
+                font-size: 1.2rem;
+                margin: 0 0 12px 0;
+                width: 100%;
+            }
+
+            .friends-container {
+                flex-direction: row;
+                justify-content: flex-start;
+                align-items: center;
+                gap: 16px;
+                overflow-x: auto;
+                overflow-y: hidden;
+                width: 100%;
+                padding-bottom: 8px;
+            }
+
+            .friend-card {
+                flex-direction: row;
+                align-items: center;
+                justify-content: flex-start;
+                text-align: left;
+                min-width: 140px;
+                padding: 4px;
+                gap: 10px;
+            }
+
+            .friend-card img {
+                width: 40px;
+                height: 40px;
+            }
+
+            .friend-card div {
+                text-align: left;
+            }
+
+            .friend-card strong {
+                font-size: 14px;
+            }
+
+            .friend-card span {
+                font-size: 12px;
+            }
+        }
+
+
+
       </style>
 
       <div class="right-bar">

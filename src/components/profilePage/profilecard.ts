@@ -46,7 +46,7 @@ class ProfileCard extends HTMLElement {
             display: flex;
             justify-content: center;
             align-items: center;
-            width: 90%;
+            width: 100%;
             height: 100%;
             box-sizing: border-box;
             backgorund-color: #ffffff;
@@ -147,6 +147,54 @@ class ProfileCard extends HTMLElement {
             font-weight: 500;
             color: #444444;
         }
+
+        @media (max-width: 480px) {
+            .container {
+                width: 100%;
+                height: auto;
+                border-radius: 8px;
+                margin-bottom: 30%;
+            }
+
+            .header {
+                height: 25vh;
+            }
+
+            .profile-img {
+                width: 30%;
+                bottom: -12%;
+                left: 4%;
+                border-width: 3px;
+            }
+
+            .edit-button {
+                padding: 0.4rem 0.8rem;
+                font-size: 0.75rem;
+                bottom: -6%;
+                right: 4%;
+            }
+
+            .body {
+                padding: 50px 16px 16px 16px;
+            }
+
+            .name {
+                font-size: 20px;
+            }
+
+            .username,
+            .bio,
+            .age {
+                font-size: 14px;
+            }
+
+            .footer {
+                flex-direction: column;
+                gap: 0.5rem;
+                font-size: 0.85rem;
+            }
+        }
+
         </style>
 
         <div class="container">
