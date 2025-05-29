@@ -165,12 +165,13 @@ class Sidebar extends HTMLElement {
       });
     });
 
-    const addBtn = this.shadowRoot?.querySelector('[navigate-to="/add"]');
-      addBtn?.addEventListener('click', (e) => {
+    const openDropModalBtn = this.shadowRoot?.querySelector('#openDropModal');
+      openDropModalBtn?.addEventListener('click', (e) => {
         e.preventDefault();
         const modal = document.createElement('create-drop-modal');
         document.body.appendChild(modal);
       });
+
   }
 }
 

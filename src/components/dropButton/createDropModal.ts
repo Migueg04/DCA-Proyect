@@ -81,24 +81,27 @@ class CreateDropModal extends HTMLElement {
           border-radius: 20px;
           padding: 1.5rem;
           width: 90vw;
-          max-width: 600px;
+          max-width: 550px;
           color: white;
           position: relative;
+          align-items: center;
         }
 
-        textarea {
-          width: 100%;
-          height: 150px;
-          resize: none;
-          font-family: 'Nunito', sans-serif;
-          font-size: 1rem;
-          padding: 1rem;
-          border-radius: 12px;
-          background: #ffffff33;
-          color: white;
-          border: none;
-          margin-top: 1rem;
-        }
+    textarea {
+
+      height: 150px;
+      resize: none;
+      font-family: 'Nunito', sans-serif;
+      font-size: 1rem;
+      padding: 1rem;
+      border-radius: 12px;
+      background: #ffffff33;
+      color: white;
+      border: none;
+      width: 100%;
+      max-width: 500px;
+    }
+
 
         #dropBtn {
           margin-top: 1rem;
@@ -124,17 +127,71 @@ class CreateDropModal extends HTMLElement {
         }
 
         .img-upload {
+          filter: brightness(0) invert(1);
           margin-top: 1rem;
           display: flex;
           align-items: center;
           gap: 1rem;
         }
+          @media (max-width: 480px) {
+        .modal {
+          padding: 1rem;
+          border-radius: 16px;
+          width: 92vw;
+          max-width: 92vw;
+        }
+
+        textarea {
+          height: 120px;
+          font-size: 1rem;
+          border-radius: 10px;
+        }
+
+        .img-upload {
+          flex-direction: row;
+          justify-content: space-between;
+          gap: 0.5rem;
+          margin-top: 1rem;
+        }
+
+        .img-upload img {
+          width: 26px;
+          height: 26px;
+        }
+
+        .img-upload button {
+          flex-shrink: 0;
+          font-size: 0.8rem;
+          padding: 0.3rem 0.6rem;
+        }
+
+        #dropBtn {
+          margin-top: 1.5rem;
+          width: 100%;
+          float: none;
+          padding: 0.6rem;
+          font-size: 1rem;
+          border-radius: 10px;
+        }
+
+        .profile img {
+          width: 44px;
+          height: 44px;
+        }
+
+        #closeBtn {
+          top: 8px;
+          left: 10px;
+          font-size: 1.2rem;
+        }
+      }
       </style>
       <div class="overlay">
         <div class="modal">
           <button id="closeBtn">&times;</button>
           <div class="profile">
-            <img src="https://i.pinimg.com/736x/e0/5a/19/e05a1996300035d853b03f8af6ce0c4a.jpg" style="width: 50px; height: 50px; border-radius: 50%;" />
+            <img src="https://i.pinimg.com/736x/e0/5a/19/e05a1996300035d853b03f8af6ce0c4a.jpg"
+            style="width: 50px; height: 50px; border-radius: 50%; margin-top: 1rem"; margin-bottom: 1rem; margin-left: 1rem/>
           </div>
           <textarea id="drop-text" placeholder="¿Qué estás pensando?"></textarea>
           <div class="img-upload">
