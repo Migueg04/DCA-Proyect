@@ -139,13 +139,13 @@ class Sidebar extends HTMLElement {
             margin-bottom: 0;
           }
         }
-      
+
       </style>
       <div class="icons">
         <div class="top-icons">
           <a class="icon-link" navigate-to="/"><img src="${this.logo}" alt="Logo Icon" class="icon" /></a>
           <a class="icon-link" navigate-to="/"><img src="${this.home}" alt="Home Icon" class="icon" /></a>
-          <a class="icon-link" navigate-to="/add"><img src="${this.add}" alt="Add Icon" class="icon" /></a>
+          <a class="icon-link" id="openDropModal"><img src="${this.add}" alt="Add Icon" class="icon" /></a>
           <a class="icon-link" navigate-to="/bookmarks"><img src="${this.bookmark}" alt="Bookmark Icon" class="icon" /></a>
         </div>
       </div>
@@ -164,6 +164,13 @@ class Sidebar extends HTMLElement {
         }
       });
     });
+
+    const addBtn = this.shadowRoot?.querySelector('[navigate-to="/add"]');
+      addBtn?.addEventListener('click', (e) => {
+        e.preventDefault();
+        const modal = document.createElement('create-drop-modal');
+        document.body.appendChild(modal);
+      });
   }
 }
 
