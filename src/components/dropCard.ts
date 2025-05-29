@@ -1,3 +1,6 @@
+import { store } from "../Flux/Store";
+import { CommentActions } from "../Flux/Actions";
+
 export interface Drop {
   username: string;
   verified: string;
@@ -10,7 +13,7 @@ export function createDropCard(drop: Drop): HTMLElement {
   const card = document.createElement("div");
   card.className = "drop-card-wrapper";
 
-  const uniqueId = `comments-${Math.random().toString(36).substr(2, 9)}`;
+  const uniqueId = `post-${Math.random().toString(36).substr(2, 9)}`;
 
   card.innerHTML = `
     <style>
@@ -88,7 +91,8 @@ export function createDropCard(drop: Drop): HTMLElement {
       }
 
       .comment-button {
-        background: none;
+        background: pink !important;
+        color: black !important;
         border: none;
         padding: 0;
         cursor: pointer;
@@ -104,7 +108,7 @@ export function createDropCard(drop: Drop): HTMLElement {
         max-height: 0;
         overflow: hidden;
         transition: max-height 0.4s ease, padding 0.4s ease;
-        padding: 0 0;
+        padding: 0;
         margin-bottom: 0;
       }
 
@@ -152,35 +156,34 @@ export function createDropCard(drop: Drop): HTMLElement {
 
         <div class="drop-actions">
           <button class="comment-button" type="button">
-            <i class="fa-regular fa-comment fa-xl" style="color: #ffffff;"></i>
-          </button>
-          <button class="comment-button" type="button">
-            <i class="fa-regular fa-heart fa-xl" style="color: #ffffff;"></i>
-          </button>
-          <button class="comment-button" type="button">
-            <i id="bookmarkIcon" class="fa-regular fa-bookmark fa-xl" style="color: #ffffff; cursor: pointer;"></i>
+            💬 Comment
           </button>
         </div>
       </div>
     </div>
 
     <div id="${uniqueId}" class="comments-container">
-      <comments-component></comments-component>
+      <comments-component data-post-id="${uniqueId}"></comments-component>
     </div>
   `;
 
-  const commentButton = card.querySelector(".comment-button");
-  const commentsContainer = card.querySelector(`#${uniqueId}`);
+  const commentButton = card.querySelector(".comment-button") as HTMLButtonElement | null;
 
-  if (commentButton && commentsContainer) {
-    let commentsVisible = false;
+  if (commentButton) {
     commentButton.addEventListener("click", () => {
-      commentsVisible = !commentsVisible;
-      commentsContainer.classList.toggle("show", commentsVisible);
+      CommentActions.toggleComments(uniqueId);
+    });
+
+    store.subscribe(() => {
+      setTimeout(() => {
+        const container = card.querySelector(`#${uniqueId}`);
+        const visible = store.areCommentsVisible(uniqueId);
+        if (container) {
+          container.classList.toggle("show", visible);
+        }
+      }, 0);
     });
   }
-
-
 
   return card;
 }

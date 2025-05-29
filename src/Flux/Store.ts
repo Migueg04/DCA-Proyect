@@ -1,4 +1,4 @@
-import { NavigateActionsType, UserActionsType, User } from './Actions';
+import { NavigateActionsType, UserActionsType, CommentActionsType, User, Comment } from './Actions';
 import { AppDispatcher, Action } from './Dispatcher';
 
 export type State = {
@@ -8,6 +8,8 @@ export type State = {
   isLoading: boolean;
   error: string | null;
   isAuthenticated: boolean;
+  commentsByPost: Record<string, Comment[]>;
+  visibleComments: Record<string, boolean>;
 };
 
 type Listener = (state: State) => void;
@@ -19,7 +21,9 @@ class Store {
     users: [],
     isLoading: false,
     error: null,
-    isAuthenticated: false
+    isAuthenticated: false,
+    commentsByPost: {},
+    visibleComments: {}
   };
   private _listeners: Listener[] = [];
 
@@ -61,7 +65,7 @@ class Store {
         this._handleLoginUser(action);
         break;
       case UserActionsType.LOGOUT_USER:
-        this._handleLogoutUser(action);
+        this._handleLogoutUser();
         break;
       case UserActionsType.ADD_USER:
         this._handleAddUser(action);
@@ -69,134 +73,109 @@ class Store {
       case UserActionsType.GET_USER_BY_EMAIL:
         this._handleGetUserByEmail(action);
         break;
+      case CommentActionsType.TOGGLE_COMMENTS:
+        this._handleToggleComments(action);
+        break;
+      case CommentActionsType.ADD_COMMENT:
+        this._handleAddComment(action);
+        break;
     }
   }
 
   private _handleNavigate(action: Action): void {
     const { path } = action.payload as { path: string };
-    this._myState = {
-      ...this._myState,
-      currentPath: path
-    };
+    this._myState.currentPath = path;
     this._emitChange();
     this.persist();
   }
 
   private _handleSetCurrentUser(action: Action): void {
     const { user } = action.payload as { user: User };
-    this._myState = {
-      ...this._myState,
-      currentUser: user,
-      isAuthenticated: !!user,
-      error: null
-    };
+    this._myState.currentUser = user;
+    this._myState.isAuthenticated = !!user;
     this._emitChange();
     this.persist();
   }
 
   private _handleUpdateUserProfile(action: Action): void {
     const { userId, updates } = action.payload as { userId: string; updates: Partial<User> };
-    const updatedUsers = this._myState.users.map(user =>
+    this._myState.users = this._myState.users.map(user =>
       user.id === userId ? { ...user, ...updates } : user
     );
-    const updatedCurrentUser = this._myState.currentUser?.id === userId
-      ? { ...this._myState.currentUser, ...updates }
-      : this._myState.currentUser;
-
-    this._myState = {
-      ...this._myState,
-      users: updatedUsers,
-      currentUser: updatedCurrentUser ?? null,
-      error: null
-    };
+    if (this._myState.currentUser?.id === userId) {
+      this._myState.currentUser = { ...this._myState.currentUser, ...updates };
+    }
     this._emitChange();
     this.persist();
   }
 
   private _handleLoginUser(action: Action): void {
     const { email, password } = action.payload as { email: string; password: string };
-    this._myState = {
-      ...this._myState,
-      isLoading: true,
-      error: null
-    };
+    this._myState.isLoading = true;
     this._emitChange();
 
     setTimeout(() => {
       const user = this._myState.users.find(u => u.email === email && u.password === password);
-      if (user) {
-        this._myState = {
-          ...this._myState,
-          currentUser: user,
-          isAuthenticated: true,
-          isLoading: false,
-          error: null,
-          currentPath: '/'
-        };
-      } else {
-        this._myState = {
-          ...this._myState,
-          currentUser: null,
-          isAuthenticated: false,
-          isLoading: false,
-          error: 'Email o contraseña incorrectos'
-        };
-      }
+      this._myState.currentUser = user || null;
+      this._myState.isAuthenticated = !!user;
+      this._myState.isLoading = false;
+      this._myState.error = user ? null : 'Email o contraseña incorrectos';
       this._emitChange();
       this.persist();
     }, 1000);
   }
 
-  private _handleLogoutUser(_: Action): void {
-    this._myState = {
-      ...this._myState,
-      currentUser: null,
-      isAuthenticated: false,
-      error: null
-    };
-    this._emitChange();
-    this.persist();
-    console.log(_)
-  }
+  private _handleLogoutUser(): void {
+  this._myState.currentUser = null;
+  this._myState.isAuthenticated = false;
+  this._myState.error = null;
+  this._emitChange();
+  this.persist();
+}
 
   private _handleAddUser(action: Action): void {
     const { user } = action.payload as { user: User };
-    const users = Array.isArray(this._myState.users) ? this._myState.users : [];
-
-    const emailExists = users.some(u => u.email === user.email);
-    const usernameExists = users.some(u => u.username === user.username);
-
-    if (emailExists) {
-      this._myState.error = 'Ya existe un usuario con este correo electrónico';
-    } else if (usernameExists) {
-      this._myState.error = 'El nombre de usuario ya está en uso';
-    } else {
-      this._myState.users = [...users, user];
+    const emailExists = this._myState.users.some(u => u.email === user.email);
+    const usernameExists = this._myState.users.some(u => u.username === user.username);
+    if (!emailExists && !usernameExists) {
+      this._myState.users.push(user);
       this._myState.error = null;
-      this.persist();
+    } else {
+      this._myState.error = emailExists
+        ? 'Ya existe un usuario con este correo electrónico'
+        : 'El nombre de usuario ya está en uso';
     }
-
     this._emitChange();
+    this.persist();
   }
 
   private _handleGetUserByEmail(action: Action): void {
     const { email } = action.payload as { email: string };
-    this._myState = {
-      ...this._myState,
-      isLoading: true,
-      error: null
-    };
+    this._myState.isLoading = true;
     this._emitChange();
 
     setTimeout(() => {
       const user = this._myState.users.find(u => u.email === email);
-      this._myState = {
-        ...this._myState,
-        isLoading: false,
-        error: user ? null : 'Usuario no encontrado'
-      };
+      this._myState.isLoading = false;
+      this._myState.error = user ? null : 'Usuario no encontrado';
       this._emitChange();
     }, 500);
+  }
+
+  private _handleToggleComments(action: Action): void {
+    const { postId } = action.payload as { postId: string };
+    const current = this._myState.visibleComments[postId] || false;
+    this._myState.visibleComments[postId] = !current;
+    this._emitChange();
+    this.persist();
+  }
+
+  private _handleAddComment(action: Action): void {
+    const { comment } = action.payload as { comment: Comment };
+    const postComments = this._myState.commentsByPost[comment.postId] || [];
+    this._myState.commentsByPost[comment.postId] = [...postComments, comment];
+    this._emitChange();
+    this.persist();
   }
 
   persist(): void {
@@ -209,11 +188,8 @@ class Store {
       try {
         const loaded = JSON.parse(persistedState);
         this._myState = {
-          currentPath: loaded.currentPath || '/',
-          currentUser: loaded.currentUser || null,
-          users: Array.isArray(loaded.users) ? loaded.users : [],
-          isLoading: false,
-          error: null,
+          ...this._myState,
+          ...loaded,
           isAuthenticated: !!loaded.currentUser
         };
         this._emitChange();
@@ -224,7 +200,15 @@ class Store {
     }
   }
 
-  // Getters
+  getComments(postId: string): Comment[] {
+    return this._myState.commentsByPost[postId] || [];
+  }
+
+  areCommentsVisible(postId: string): boolean {
+    return !!this._myState.visibleComments[postId];
+  }
+
+  // other existing getters below...
   getCurrentUser(): User | null {
     return this._myState.currentUser;
   }
@@ -254,10 +238,7 @@ class Store {
   }
 
   clearError(): void {
-    this._myState = {
-      ...this._myState,
-      error: null
-    };
+    this._myState.error = null;
     this._emitChange();
   }
 }

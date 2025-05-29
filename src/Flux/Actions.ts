@@ -13,10 +13,15 @@ export const UserActionsType = {
   GET_USER_BY_EMAIL: 'GET_USER_BY_EMAIL'
 };
 
+export const CommentActionsType = {
+  TOGGLE_COMMENTS: 'TOGGLE_COMMENTS',
+  ADD_COMMENT: 'ADD_COMMENT'
+};
+
 export interface User {
   id: string;
   email: string;
-  password: string; 
+  password: string;
   name: string;
   username: string;
   bio: string;
@@ -24,6 +29,15 @@ export interface User {
   friends: string;
   profileimg: string;
   bgimg: string;
+}
+
+export interface Comment {
+  postId: string;
+  commentId: string;
+  userId: string;
+  username: string;
+  content: string;
+  createdAt: string;
 }
 
 export const NavigateActions = {
@@ -75,6 +89,22 @@ export const UserActions = {
     AppDispatcher.dispatch({
       type: UserActionsType.GET_USER_BY_EMAIL,
       payload: { email }
+    });
+  }
+};
+
+export const CommentActions = {
+  toggleComments: (postId: string) => {
+    AppDispatcher.dispatch({
+      type: CommentActionsType.TOGGLE_COMMENTS,
+      payload: { postId }
+    });
+  },
+
+  addComment: (comment: Comment) => {
+    AppDispatcher.dispatch({
+      type: CommentActionsType.ADD_COMMENT,
+      payload: { comment }
     });
   }
 };
