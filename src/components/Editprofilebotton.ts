@@ -8,6 +8,10 @@ class EditProfileButton extends HTMLElement {
     const style = document.createElement('style');
     style.textContent = `
     <style>
+    @media (max-width: 768px) {
+    .menu {
+    flex-direction: column;
+}}
     button {
         display: flex;
         align-items: center;

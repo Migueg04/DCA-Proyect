@@ -11,6 +11,11 @@ constructor(){
 render(){
 if(!this.shadowRoot) return;
 this.shadowRoot.innerHTML = `
+<style>
+@media (max-width: 768px) {
+.menu {
+    flex-direction: column;
+}}
                 .profile-input {
                     margin: 10px 0;
                 }
