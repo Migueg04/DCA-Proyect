@@ -1,176 +1,145 @@
-import comentarios from '../../data/comments.json'; 
+import { CommentActions } from "../../Flux/Actions";
+import { store } from "../../Flux/Store";
 
-type commentsRespuesta = {
-    username: string;
-    verified: string;
-    content: string;
-};
+interface Comment {
+  postId: string;
+  commentId: string;
+  userId: string;
+  username: string;
+  content: string;
+  createdAt: string;
+}
 
 class Comments extends HTMLElement {
+  private postId: string = "";
 
-    constructor() {
-        super();
+  constructor() {
+    super();
+  }
+
+  connectedCallback() {
+    this.postId = this.getAttribute("data-post-id") || this.id || "default";
+    this.render();
+    this.addListeners();
+    store.subscribe(() => {
+      this.updateComments();
+    });
+  }
+
+  addListeners() {
+    const button = this.querySelector("button") as HTMLButtonElement | null;
+    const input = this.querySelector("#input-comments-textfield") as HTMLInputElement | null;
+    const user = store.getCurrentUser();
+
+    if (button && input && user) {
+      button.onclick = () => {
+        const value = input.value.trim();
+        if (value) {
+          const newComment: Comment = {
+            postId: this.postId,
+            commentId: Math.random().toString(36).substring(2),
+            userId: user.id,
+            username: user.username,
+            content: value,
+            createdAt: new Date().toISOString(),
+          };
+          CommentActions.addComment(newComment);
+          input.value = "";
+          input.focus();
+        }
+      };
     }
+  }
 
-    connectedCallback() {
-        this.render();
-        this.addEventListener("button-click", () => {
-            const input = this.querySelector("#input-comments-textfield") as HTMLInputElement | null;
-            if (input) {
-                console.log("Esto es un comentario nuevo:", input.value);
-            }
-        });
-    }
+  updateComments() {
+    const comments = store.getComments(this.postId);
+    const commentsHTML = comments.map(
+      (comment) => `
+        <div class="username">
+          <p>${comment.username}</p>
+        </div>
+        <div class="message">${comment.content}</div>
+      `
+    ).join("");
 
-    getRandomComments(): commentsRespuesta[] {
-        const shuffled = [...comentarios].sort(() => Math.random() - 0.5);
-        return shuffled.slice(0, 3);
-    }
+    const container = this.querySelector("#comments");
+    if (container) container.innerHTML = commentsHTML || '<p style="color:white">No comments yet</p>';
+  }
 
-    render() {
-        const randomComments = this.getRandomComments();
-        const comentariosHTML = randomComments.map((comment: commentsRespuesta) => `
-            <div class="username">
-                <p>${comment.username}</p>
-                <img src="${comment.verified}" alt="verified" class="verified-icon" />
-            </div>
-            <div class="message">${comment.content}</div>
-        `).join("");
-
-        this.innerHTML = `
-            <style>
-                #comments-container{
-                    
-                    border-radius: 15px;
-                    max-height: fit-content;
-                    width: 40vw;
-                    display: flex;
-                    flex-direction: column;
-                    justify-content: center;
-                    align-items: center;
-                }
-
-                .message{
-                    margin: 1%;
-                    margin-bottom: 7%;
-                    color: #ffffff
-                }
-
-                .username {
-                    font-weight: bold;
-                    color: white;
-                    display: flex;
-                    font-weight: bold;
-                }
-
-
-                .verified-icon {
-                    width: 16px;
-                    height: 16px;
-                    margin-left: 2%;
-                }
-
-                #comments{
-                    width: 80%;
-                    max-height: fit-content;
-                    margin-top: 3vh;
-                    font-family: "Nunito";
-                }
-
-                #input-comments{
-                    margin-top: 20px;
-                    display: flex;
-                    justify-content: center;
-                    margin-bottom: 10px;
-                    width: 100%;
-                }
-
-                input{
-                    height: 56%;
-                    border: none;
-                    border-top-left-radius: 10px;
-                    border-bottom-left-radius: 10px;
-                    border-top-right-radius: 0;
-                    border-bottom-right-radius: 0;
-                    outline: none;
-                    font-size: 16px;
-                    background-color: #ffffff;
-                    color: #100c2a; /* texto del placeholder */
-                    font-weight: 500;
-                    width: 75%;
-                    padding: 10px;
-                    
-                }
-
-
-                @media (max-width:426px){
-                    #comments-container{
-                        
-                        max-height: fit-content;
-                        width: 80vw;
-                    }
-
-                    .message{
-                        margin: 5%;
-                        color: #ffffff
-                    }
-
-                    #comments{
-                        width: 80%;
-                        height: 80%;
-                    }
-                    
-                    #input-comments{
-                        margin-top: 20px;
-                        display: flex;
-                        justify-content: center;
-                        margin-bottom: 10px;
-                        width: 100%;
-                    }
-
-                    button{
-                        background-color: #EA3B81;
-                        font-family: "Nunito";
-                        font-weight: bold;
-                        border-top-left-radius: 0;
-                        border-bottom-left-radius: 0;
-                        border-top-right-radius: 10px;
-                        border-bottom-right-radius: 10px;
-                        border: none;
-                        width:20%;
-                        color: white;
-                        cursor: pointer;
-                        font-size: 12px;
-                        height: 100%;  
-                    }
-
-                    input{
-                        border: none;
-                        border-top-left-radius: 10px;
-                        border-bottom-left-radius: 10px;
-                        border-top-right-radius: 0;
-                        border-bottom-right-radius: 0;
-                        outline: none;
-                        font-size: 12px;
-                        background-color: #ffffff;
-                        color: #100c2a; 
-                        font-weight: 500;
-                        width: 70%;
-                        height: 56%;
-                    }
-            </style>
-            <div id="comments-container">
-                <div id="comments">
-                    ${comentariosHTML}
-                </div>
-                <div id="input-comments">
-                    <input id="input-comments-textfield" type="text" placeholder="Add a comment...">
-                    <button-component></button-component>
-                </div>
-            </div>
-        `;
-    }
-
+  render() {
+    this.innerHTML = `
+      <div id="comments-container">
+        <style>
+          #comments-container {
+            border-radius: 15px;
+            max-height: fit-content;
+            width: 40vw;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background-color: rgba(255, 255, 255, 0.05);
+            padding: 16px;
+          }
+          .message {
+            margin: 1%;
+            margin-bottom: 7%;
+            color: #ffffff;
+          }
+          .username {
+            font-weight: bold;
+            color: white;
+            display: flex;
+          }
+          #comments {
+            width: 80%;
+            max-height: fit-content;
+            margin-top: 3vh;
+            font-family: "Nunito";
+          }
+          #input-comments {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            margin-bottom: 10px;
+            width: 100%;
+          }
+          input {
+            height: 56%;
+            border: none;
+            border-top-left-radius: 10px;
+            border-bottom-left-radius: 10px;
+            outline: none;
+            font-size: 16px;
+            background-color: #ffffff;
+            color: #100c2a;
+            font-weight: 500;
+            width: 75%;
+            padding: 10px;
+          }
+          button {
+            background-color: #EA3B81;
+            font-family: "Nunito";
+            font-weight: bold;
+            border-top-right-radius: 10px;
+            border-bottom-right-radius: 10px;
+            border: none;
+            width: 25%;
+            color: white;
+            cursor: pointer;
+            font-size: 14px;
+          }
+        </style>
+        <div id="comments">
+          <p style="color:white">No comments yet</p>
+        </div>
+        <div id="input-comments">
+          <input id="input-comments-textfield" type="text" placeholder="Add a comment...">
+          <button>Comment</button>
+        </div>
+      </div>
+    `;
+  }
 }
 
 export default Comments;

@@ -1,4 +1,4 @@
-import { Friend, News } from '../types/types';
+import { Friend, News } from '../utils/types/types';
 
 class TrendingPanel extends HTMLElement {
 	constructor() {
@@ -23,7 +23,7 @@ class TrendingPanel extends HTMLElement {
   .trending-panel {
     position: fixed;
     top: 40px;
-    right: 20px;
+    right: 40px;
     width: 290px;
     background: #ffffff;
     color: #000;
@@ -176,9 +176,9 @@ class TrendingPanel extends HTMLElement {
               <li class="friend">
                 <img src="${friend.avatar}" alt="${friend.name}" />
                 <div>
-  <strong>${friend.name}</strong>
-  <span>@${friend.username}</span>
-</div>
+                  <strong>${friend.name}</strong>
+                  <span>@${friend.username}</span>
+                </div>
                 <button class="plus-btn">+</button>
               </li>
             `
