@@ -210,14 +210,16 @@ class TrendingPanel extends HTMLElement {
     `;
     const plusButtons = this.shadowRoot!.querySelectorAll('.plus-btn');
     plusButtons.forEach(btn => {
-      btn.addEventListener('click', () => {
-        window.open('about:blank', '_blank');
+      btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      const modal = document.createElement('create-drop-modal');
+      document.body.appendChild(modal);
       });
     });
 
     const showMoreBtn = this.shadowRoot!.querySelector('.show-more');
     showMoreBtn?.addEventListener('click', () => {
-      window.open('about:blank', '_blank');
+      console.log ('ver nuevos amigos');
     });
 	}
 }
