@@ -167,23 +167,32 @@ export function createDropCard(drop: Drop): HTMLElement {
     </div>
   `;
 
-  const commentButton = card.querySelector(".comment-button") as HTMLButtonElement | null;
+  const commentButton = card.querySelector(".comment-button") as HTMLButtonElement;
 
-  if (commentButton) {
-    commentButton.addEventListener("click", () => {
-      CommentActions.toggleComments(uniqueId);
-    });
+  commentButton.addEventListener("click", () => {
+    console.log(`[DEBUG] toggleComments(${uniqueId})`);
+    CommentActions.toggleComments(uniqueId);
+  });
 
-    store.subscribe(() => {
-      setTimeout(() => {
-        const container = card.querySelector(`#${uniqueId}`);
-        const visible = store.areCommentsVisible(uniqueId);
-        if (container) {
-          container.classList.toggle("show", visible);
-        }
-      }, 0);
-    });
+store.subscribe(() => {
+  const visible = store.areCommentsVisible(uniqueId);
+  const container = card.querySelector(`#${uniqueId}`);
+  const commentComponent = container?.querySelector("comments-component");
+
+  if (!container) {
+    console.warn(`[❌] Contenedor de comentarios no encontrado para ${uniqueId}`);
+    return;
   }
+
+  console.log(`[✅] ${uniqueId} visible=${visible}`);
+  container.classList.toggle("show", visible);
+
+  if (!commentComponent) {
+    console.warn(`[⚠️] comments-component no presente dentro de ${uniqueId}`);
+  } else {
+    console.log(`[👀] comments-component encontrado para ${uniqueId}`);
+  }
+});
 
   return card;
 }
