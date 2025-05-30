@@ -1,7 +1,5 @@
 import "./components/Editprofilebotton";
-import "./components/profilePage/profilecard";
-
-
+import "./components/profilePage/logOutBtn";
 
 import Root from "./components/root/root";
 import Comments from "./components/comments/comments";
@@ -21,21 +19,27 @@ import LogOutBtn from "./components/profilePage/logOutBtn";
 import RightBar from "./components/profilePage/friendsBar";
 import CreateDropModal from './components/dropButton/createDropModal';
 
-
 customElements.define("comments-component", Comments);
 customElements.define("button-component", Button);
 customElements.define("section-component", Section);
-customElements.define('login-form', LoginForm);
-customElements.define('auth-page', AuthContainer);
-customElements.define('root-section', Root);
-customElements.define('main-page', MainPage)
-customElements.define('profile-page', ProfilePage)
-customElements.define('profilecard-component', ProfileCard);
-customElements.define ('register-form', RegisterForm)
-customElements.define('log-out-btn', LogOutBtn);
-customElements.define('right-bar', RightBar);
-if (!customElements.get('create-drop-modal')) {
-  customElements.define('create-drop-modal', CreateDropModal);
+customElements.define("login-form", LoginForm);
+customElements.define("auth-page", AuthContainer);
+customElements.define("root-section", Root);
+customElements.define("main-page", MainPage);
+customElements.define("profile-page", ProfilePage);
+
+if (!customElements.get("profilecard-component")) {
+  customElements.define("profilecard-component", ProfileCard);
 }
+customElements.define("register-form", RegisterForm);
 
 
+if (!customElements.get("log-out-btn")) {
+  console.log("Registrando log-out-btn");
+  customElements.define("log-out-btn", LogOutBtn);
+}
+customElements.define("right-bar", RightBar);
+
+if (!customElements.get("create-drop-modal")) {
+  customElements.define("create-drop-modal", CreateDropModal);
+}

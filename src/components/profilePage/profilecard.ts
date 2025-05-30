@@ -1,16 +1,17 @@
 import "../Editprofilebotton";
 import "../Sidebar";
+import "../profilePage/logOutBtn";
 
 import { State, store } from "../../Flux/Store";
 
 export enum ProfileCardAttribute {
-  bgimg       = "bgimg",
-  profileimg  = "profileimg",
-  name        = "name",
-  username    = "username",
-  bio         = "bio",
-  age         = "age",
-  friends     = "friends",
+  bgimg = "bgimg",
+  profileimg = "profileimg",
+  name = "name",
+  username = "username",
+  bio = "bio",
+  age = "age",
+  friends = "friends",
 }
 
 class ProfileCard extends HTMLElement {
@@ -37,7 +38,17 @@ class ProfileCard extends HTMLElement {
     newVal: string | null
   ) {
     if (newVal !== null) {
-      (this as any)[prop] = newVal;
+      switch (prop) {
+        case ProfileCardAttribute.bgimg:
+        case ProfileCardAttribute.profileimg:
+        case ProfileCardAttribute.name:
+        case ProfileCardAttribute.username:
+        case ProfileCardAttribute.bio:
+        case ProfileCardAttribute.age:
+        case ProfileCardAttribute.friends:
+          this[prop] = newVal;
+          break;
+      }
       this.render();
     }
   }
@@ -49,20 +60,21 @@ class ProfileCard extends HTMLElement {
   render() {
     if (!this.shadowRoot) return;
 
-    // Tomar datos del store si no vinieron por atributo
     const { currentUser } = store.getState() as State;
-    this.bgimg      ||= currentUser?.bgimg      ?? "";
-    this.profileimg ||= currentUser?.profileimg ?? "";
-    this.name       ||= currentUser?.name       ?? "";
-    this.username   ||= currentUser?.username   ?? "";
-    this.bio        ||= currentUser?.bio        ?? "";
-    this.age        ||= currentUser?.age        ?? "";
-    this.friends    ||= currentUser?.friends    ?? "";
+
+    const props: Record<ProfileCardAttribute, string> = {
+      bgimg: this.bgimg ?? currentUser?.bgimg ?? "",
+      profileimg: this.profileimg ?? currentUser?.profileimg ?? "",
+      name: this.name ?? currentUser?.name ?? "",
+      username: this.username ?? currentUser?.username ?? "",
+      bio: this.bio ?? currentUser?.bio ?? "",
+      age: this.age ?? currentUser?.age ?? "",
+      friends: this.friends ?? currentUser?.friends ?? "",
+    };
 
     this.shadowRoot.innerHTML = `
       <style>
         :host {
-          /* Ya no ocupa 100% altura ni pinta fondo */
           display: flex;
           justify-content: center;
           align-items: center;
@@ -70,7 +82,6 @@ class ProfileCard extends HTMLElement {
           box-sizing: border-box;
           overflow: hidden;
         }
-
         .container {
           width: 960px;
           border-radius: 16px;
@@ -81,13 +92,11 @@ class ProfileCard extends HTMLElement {
           position: relative;
           height: 80%;
         }
-
         .header {
           position: relative;
           height: 30vh;
-          background: url(${this.bgimg}) center/cover no-repeat;
+          background: url(${props.bgimg}) center/cover no-repeat;
         }
-
         .profile-img {
           position: absolute;
           bottom: -20%;
@@ -100,20 +109,16 @@ class ProfileCard extends HTMLElement {
           box-shadow: 0 0 10px rgba(0,0,0,0.3);
           background-color: white;
         }
-
         .profile-img img {
           width: 100%;
           height: 100%;
           object-fit: cover;
         }
-
-        /* Posicionamiento inalterado de tu custom button */
         edit-profile-button {
           position: absolute;
           bottom: -8%;
           right: 5%;
         }
-
         .body {
           padding: 80px 32px 32px;
         }
@@ -148,7 +153,6 @@ class ProfileCard extends HTMLElement {
           font-weight: 500;
           color: #444;
         }
-
         @media (max-width: 480px) {
           .container { width:100%; border-radius:8px; margin-bottom:30%; height:auto; }
           .header   { height:25vh; }
@@ -160,21 +164,20 @@ class ProfileCard extends HTMLElement {
           .footer { flex-direction:column; gap:0.5rem; font-size:0.85rem; }
         }
       </style>
-
       <div class="container">
         <div class="header">
           <div class="profile-img">
-            <img src="${this.profileimg}" alt="Profile Picture" />
+            <img src="${props.profileimg}" alt="Profile Picture" />
           </div>
           <edit-profile-button></edit-profile-button>
         </div>
         <div class="body">
-          <div class="name">${this.name}</div>
-          <div class="username">@${this.username}</div>
-          <div class="age">${this.age ? this.age + " years old" : ""}</div>
-          <div class="bio">${this.bio}</div>
+          <div class="name">${props.name}</div>
+          <div class="username">@${props.username}</div>
+          <div class="age">${props.age ? props.age + " years old" : ""}</div>
+          <div class="bio">${props.bio}</div>
           <div class="footer">
-            <span>Friends: ${this.friends}</span>
+            <span>Friends: ${props.friends}</span>
             <log-out-btn></log-out-btn>
           </div>
         </div>

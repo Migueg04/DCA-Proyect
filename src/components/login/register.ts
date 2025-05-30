@@ -9,11 +9,11 @@ import { UserActions, NavigateActions } from "../../Flux/Actions";
     const birth = new Date(birthdate);
     let age = today.getFullYear() - birth.getFullYear();
     const monthDiff = today.getMonth() - birth.getMonth();
-    
+
     if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
       age--;
     }
-    
+
     return age.toString();
   }
 
@@ -23,7 +23,7 @@ import { UserActions, NavigateActions } from "../../Flux/Actions";
     const hasLower = /[a-z]/.test(password);
     const hasNumber = /[0-9]/.test(password);
     const hasSymbol = /[^A-Za-z0-9]/.test(password);
-    return password.length >= minLength;
+    return password.length >= minLength && hasUpper && hasLower && hasNumber && hasSymbol;
   }
 export class RegisterForm extends HTMLElement {
   constructor() {
@@ -103,14 +103,14 @@ export class RegisterForm extends HTMLElement {
           justify-content: center;
           align-items: center;
           min-height: 100vh;
-          background: 
+          background:
             linear-gradient(180deg,rgba(235, 59, 132, 0.6) 0%, rgba(16, 6, 43, 0.8) 80%),
             url('https://i.postimg.cc/6QSzRvFf/image-43.png');
           background-size: cover;
           background-position: center;
           background-repeat: no-repeat;
           background-attachment: fixed;
-          
+
           font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         }
 
@@ -119,7 +119,7 @@ export class RegisterForm extends HTMLElement {
           padding: 40px;
           width: 100%;
           max-width: 400px;
-          
+
         }
 
         .register-title {
@@ -287,7 +287,7 @@ export class RegisterForm extends HTMLElement {
           }
         }
       </style>
-      
+
       <div class="register-container">
 
         <div class="respawn-header">
@@ -303,16 +303,16 @@ export class RegisterForm extends HTMLElement {
             <input id="email" type="email" placeholder="Email" required />
             <input id="password" type="password" placeholder="Password" required />
             <input id="confirm-password" type="password" placeholder="Confirm your Password" required />
-          
+
             <div class="birthdate-section">
                 <label class="birthdate-label" for="birthdate">Birthdate</label>
                 <input id="birthdate" type="date" required />
             </div>
-          
-          
+
+
           <button type="submit" class="next-button">Next</button>
         </form>
-        
+
         <div class="login-link">
           Already have an account? <a href="#" id="go-to-login">Log in</a>
         </div>

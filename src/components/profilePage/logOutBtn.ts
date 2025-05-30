@@ -7,6 +7,7 @@ class LogOutBtn extends HTMLElement {
   }
 
   connectedCallback() {
+    console.log("✅ LogOutBtn conectado"); // ← Confirmación en consola
     this.render();
     this.shadowRoot?.querySelector('button')?.addEventListener('click', this.handleLogout.bind(this));
   }
@@ -16,8 +17,8 @@ class LogOutBtn extends HTMLElement {
   }
 
   handleLogout() {
-    UserActions.logoutUser();                // 1. Cerrar sesión
-    NavigateActions.navigate('/login');     // 2. Navegar al login (ajusta si tu ruta es diferente)
+    UserActions.logoutUser();
+    NavigateActions.navigate('/auth');
   }
 
   render() {
@@ -38,12 +39,17 @@ class LogOutBtn extends HTMLElement {
           button:hover {
             background-color: #c0392b;
           }
+
+          /* Borde para debug visual */
+          :host {
+            display: block;
+            border: 2px dashed green;
+          }
         </style>
         <button>Cerrar sesión</button>
       `;
     }
   }
 }
-
 
 export default LogOutBtn;
