@@ -23,7 +23,7 @@ import { UserActions, NavigateActions } from "../../Flux/Actions";
     const hasLower = /[a-z]/.test(password);
     const hasNumber = /[0-9]/.test(password);
     const hasSymbol = /[^A-Za-z0-9]/.test(password);
-    return password.length >= minLength && hasUpper && hasLower && hasNumber && hasSymbol;
+    return password.length >= minLength;
   }
 export class RegisterForm extends HTMLElement {
   constructor() {

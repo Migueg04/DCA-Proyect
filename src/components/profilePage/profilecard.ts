@@ -203,6 +203,7 @@ class ProfileCard extends HTMLElement {
                     <img src="${this.profileimg}" alt="Profile Picture" />
                 </div>
                 <button class="edit-button">⚙Edit profile</button>
+                <edit-profile-button></edit-profile-button>
             </div>
             <div class="body">
                 <div class="name">${this.name ?? ''}</div>

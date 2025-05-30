@@ -47,6 +47,8 @@ class Root extends HTMLElement {
       default:
         content.innerHTML = `<h1>404 - Página no encontrada</h1>`;
         break;
+      case '/Editprofile':
+        content.innerHTML = `<edit-profile-button></edit-profile-button>`;
     }
   }
 
@@ -71,7 +73,7 @@ class Root extends HTMLElement {
           background: linear-gradient(180deg, rgba(235, 59, 132, 0.6) 0%, rgba(16, 6, 43, 0.8) 80%);
         ` : ''}
         }
-
+        
         #content {
           flex-grow: 1;
           ${!isAuthPage ? 'padding-left: 80px;' : ''}

@@ -80,6 +80,12 @@ class Sidebar extends HTMLElement {
           height: 40px;
           cursor: pointer;
           transition: background-color 0.2s;
+        }
+
+        .top-icons a:hover {
+          background-color: rgba(255, 255, 255, 0.1);
+          border-radius: 8px;
+          transition: background-color 0.2s;
           font-size: 24px;
         }
 
@@ -136,6 +142,7 @@ class Sidebar extends HTMLElement {
           }
         }
 
+      
       </style>
       <div class="icons">
         <div class="top-icons">
