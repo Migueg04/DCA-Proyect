@@ -1,7 +1,8 @@
 import { store } from "../Flux/Store";
-import { CommentActions } from "../Flux/Actions";
+import { CommentActions, LikeActions } from "../Flux/Actions";
 
 export interface Drop {
+  id: string;
   username: string;
   verified: string;
   profileImage: string;
@@ -13,7 +14,11 @@ export function createDropCard(drop: Drop): HTMLElement {
   const card = document.createElement("div");
   card.className = "drop-card-wrapper";
 
-  const uniqueId = `post-${Math.random().toString(36).substr(2, 9)}`;
+  const uniqueId = drop.id;
+  const profileImage = drop.profileImage || "assets/default-profile.png";
+  const verified = drop.verified || "assets/default-verified.png";
+  const image = drop.image || "";
+  const currentUser = store.getCurrentUser();
 
   card.innerHTML = `
     <style>
@@ -90,12 +95,29 @@ export function createDropCard(drop: Drop): HTMLElement {
         color: white;
       }
 
-      .comment-button {
-        background: pink !important;
-        color: black !important;
+      .comment-button, .like-button {
+        background: pink;
+        color: black;
         border: none;
-        padding: 0;
+        padding: 0.5rem 1rem;
         cursor: pointer;
+        border-radius: 8px;
+        transition: transform 0.2s;
+      }
+
+      .like-button.liked {
+        background: #ea3b81;
+        color: white;
+      }
+
+      .like-button.bounce {
+        animation: bounce 0.4s ease;
+      }
+
+      @keyframes bounce {
+        0%   { transform: scale(1); }
+        50%  { transform: scale(1.3); }
+        100% { transform: scale(1); }
       }
 
       .drop-actions {
@@ -132,32 +154,26 @@ export function createDropCard(drop: Drop): HTMLElement {
         .drop-right {
           width: 100%;
         }
-
-        .drop-actions {
-          display: flex;
-          padding-top: 30px;
-        }
       }
     </style>
 
     <div class="drop-card">
       <div class="drop-image-container">
-        ${drop.image ? `<img src="${drop.image}" alt="drop image" class="drop-image" />` : ""}
+        ${image ? `<img src="${image}" alt="drop image" class="drop-image" />` : ""}
       </div>
       <div class="drop-content">
         <div class="drop-header">
-          <img src="${drop.profileImage}" alt="${drop.username}" class="profile-img" />
+          <img src="${profileImage}" alt="${drop.username}" class="profile-img" />
           <div class="user-info">
             <span class="username">${drop.username}</span>
-            <img src="${drop.verified}" alt="verified" class="verified-icon" />
+            <img src="${verified}" alt="verified" class="verified-icon" />
           </div>
         </div>
         <p class="drop-text">${drop.content}</p>
 
         <div class="drop-actions">
-          <button class="comment-button" type="button">
-            💬 Comment
-          </button>
+          <button class="comment-button" type="button">💬 Comment</button>
+          <button class="like-button" type="button">❤️ <span class="like-count">0</span></button>
         </div>
       </div>
     </div>
@@ -168,31 +184,35 @@ export function createDropCard(drop: Drop): HTMLElement {
   `;
 
   const commentButton = card.querySelector(".comment-button") as HTMLButtonElement;
+  const likeButton = card.querySelector(".like-button") as HTMLButtonElement;
+  const likeCount = card.querySelector(".like-count") as HTMLElement;
 
   commentButton.addEventListener("click", () => {
-    console.log(`[DEBUG] toggleComments(${uniqueId})`);
     CommentActions.toggleComments(uniqueId);
   });
 
-store.subscribe(() => {
-  const visible = store.areCommentsVisible(uniqueId);
-  const container = card.querySelector(`#${uniqueId}`);
-  const commentComponent = container?.querySelector("comments-component");
+  likeButton.addEventListener("click", () => {
+    if (currentUser) {
+      LikeActions.toggleLike(uniqueId, currentUser.id);
+      likeButton.classList.add("bounce");
+      setTimeout(() => likeButton.classList.remove("bounce"), 400);
+    }
+  });
 
-  if (!container) {
-    console.warn(`[❌] Contenedor de comentarios no encontrado para ${uniqueId}`);
-    return;
-  }
+  store.subscribe(() => {
+    const visible = store.areCommentsVisible(uniqueId);
+    const container = card.querySelector(`#${uniqueId}`);
+    if (container) container.classList.toggle("show", visible);
 
-  console.log(`[✅] ${uniqueId} visible=${visible}`);
-  container.classList.toggle("show", visible);
+    const likes = store.getLikes(uniqueId);
+    likeCount.textContent = likes.toString();
 
-  if (!commentComponent) {
-    console.warn(`[⚠️] comments-component no presente dentro de ${uniqueId}`);
-  } else {
-    console.log(`[👀] comments-component encontrado para ${uniqueId}`);
-  }
-});
+    if (currentUser && store.isPostLikedByUser(uniqueId, currentUser.id)) {
+      likeButton.classList.add("liked");
+    } else {
+      likeButton.classList.remove("liked");
+    }
+  });
 
   return card;
 }

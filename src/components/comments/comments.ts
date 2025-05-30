@@ -22,8 +22,7 @@ class Comments extends HTMLElement {
     this.render();
     this.addListeners();
     store.subscribe(() => {
-      this.render();
-      this.addListeners();
+      this.updateComments();
     });
   }
 
@@ -46,12 +45,13 @@ class Comments extends HTMLElement {
           };
           CommentActions.addComment(newComment);
           input.value = "";
+          input.focus();
         }
       };
     }
   }
 
-  render() {
+  updateComments() {
     const comments = store.getComments(this.postId);
     const commentsHTML = comments.map(
       (comment) => `
@@ -62,6 +62,11 @@ class Comments extends HTMLElement {
       `
     ).join("");
 
+    const container = this.querySelector("#comments");
+    if (container) container.innerHTML = commentsHTML || '<p style="color:white">No comments yet</p>';
+  }
+
+  render() {
     this.innerHTML = `
       <div id="comments-container">
         <style>
@@ -126,7 +131,7 @@ class Comments extends HTMLElement {
           }
         </style>
         <div id="comments">
-          ${commentsHTML || '<p style="color:white">No comments yet</p>'}
+          <p style="color:white">No comments yet</p>
         </div>
         <div id="input-comments">
           <input id="input-comments-textfield" type="text" placeholder="Add a comment...">

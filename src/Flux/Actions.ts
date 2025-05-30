@@ -1,3 +1,4 @@
+
 import { AppDispatcher } from './Dispatcher';
 
 export const NavigateActionsType = {
@@ -16,6 +17,10 @@ export const UserActionsType = {
 export const CommentActionsType = {
   TOGGLE_COMMENTS: 'TOGGLE_COMMENTS',
   ADD_COMMENT: 'ADD_COMMENT'
+};
+
+export const LikeActionsType = {
+  TOGGLE_LIKE: 'TOGGLE_LIKE'
 };
 
 export interface User {
@@ -105,6 +110,15 @@ export const CommentActions = {
     AppDispatcher.dispatch({
       type: CommentActionsType.ADD_COMMENT,
       payload: { comment }
+    });
+  }
+};
+
+export const LikeActions = {
+  toggleLike: (postId: string, userId: string) => {
+    AppDispatcher.dispatch({
+      type: LikeActionsType.TOGGLE_LIKE,
+      payload: { postId, userId }
     });
   }
 };

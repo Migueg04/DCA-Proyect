@@ -80,16 +80,12 @@ class Sidebar extends HTMLElement {
           height: 40px;
           cursor: pointer;
           transition: background-color 0.2s;
+          font-size: 24px;
         }
 
         .top-icons a:hover {
           background-color: rgba(255, 255, 255, 0.1);
           border-radius: 8px;
-        }
-
-        .top-icons img {
-          width: 24px;
-          height: 24px;
         }
 
         .profile {
@@ -143,18 +139,17 @@ class Sidebar extends HTMLElement {
       </style>
       <div class="icons">
         <div class="top-icons">
-          <a class="icon-link" navigate-to="/"><img src="${this.logo}" alt="Logo Icon" class="icon" /></a>
-          <a class="icon-link" navigate-to="/"><img src="${this.home}" alt="Home Icon" class="icon" /></a>
-          <a class="icon-link" id="openDropModal"><img src="${this.add}" alt="Add Icon" class="icon" /></a>
-          <a class="icon-link" navigate-to="/bookmarks"><img src="${this.bookmark}" alt="Bookmark Icon" class="icon" /></a>
+          <a class="icon-link" navigate-to="/">${this.logo ? `<img src="${this.logo}" alt="Logo Icon" class="icon" />` : '🎮'}</a>
+          <a class="icon-link" navigate-to="/">${this.home ? `<img src="${this.home}" alt="Home Icon" class="icon" />` : '🏠'}</a>
+          <a class="icon-link" id="openDropModal">${this.add ? `<img src="${this.add}" alt="Add Icon" class="icon" />` : '➕'}</a>
+          <a class="icon-link" navigate-to="/bookmarks">${this.bookmark ? `<img src="${this.bookmark}" alt="Bookmark Icon" class="icon" />` : '🔖'}</a>
         </div>
       </div>
       <div class="profile" navigate-to="/profile">
-        <img src="${this.profileimg ?? ''}" alt="Profile" />
+        <img src="${this.profileimg || 'https://www.svgrepo.com/show/384674/account-avatar-profile-user-11.svg'}" alt="Profile" />
       </div>
     `;
 
-    // Agregar event listeners a todos los elementos con navigate-to
     this.shadowRoot.querySelectorAll('[navigate-to]').forEach(element => {
       element.addEventListener('click', (e) => {
         e.preventDefault();
@@ -166,12 +161,11 @@ class Sidebar extends HTMLElement {
     });
 
     const openDropModalBtn = this.shadowRoot?.querySelector('#openDropModal');
-      openDropModalBtn?.addEventListener('click', (e) => {
-        e.preventDefault();
-        const modal = document.createElement('create-drop-modal');
-        document.body.appendChild(modal);
-      });
-
+    openDropModalBtn?.addEventListener('click', (e) => {
+      e.preventDefault();
+      const modal = document.createElement('create-drop-modal');
+      document.body.appendChild(modal);
+    });
   }
 }
 

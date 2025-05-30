@@ -1,5 +1,10 @@
+
 import { NavigateActionsType, UserActionsType, CommentActionsType, User, Comment } from './Actions';
 import { AppDispatcher, Action } from './Dispatcher';
+
+export const LikeActionsType = {
+  TOGGLE_LIKE: 'TOGGLE_LIKE'
+};
 
 export type State = {
   currentPath: string;
@@ -10,6 +15,7 @@ export type State = {
   isAuthenticated: boolean;
   commentsByPost: Record<string, Comment[]>;
   visibleComments: Record<string, boolean>;
+  likesByPost: Record<string, string[]>;
 };
 
 type Listener = (state: State) => void;
@@ -23,8 +29,10 @@ class Store {
     error: null,
     isAuthenticated: false,
     commentsByPost: {},
-    visibleComments: {}
+    visibleComments: {},
+    likesByPost: {}
   };
+
   private _listeners: Listener[] = [];
 
   constructor() {
@@ -79,6 +87,9 @@ class Store {
       case CommentActionsType.ADD_COMMENT:
         this._handleAddComment(action);
         break;
+      case LikeActionsType.TOGGLE_LIKE:
+        this._handleToggleLike(action);
+        break;
     }
   }
 
@@ -126,12 +137,12 @@ class Store {
   }
 
   private _handleLogoutUser(): void {
-  this._myState.currentUser = null;
-  this._myState.isAuthenticated = false;
-  this._myState.error = null;
-  this._emitChange();
-  this.persist();
-}
+    this._myState.currentUser = null;
+    this._myState.isAuthenticated = false;
+    this._myState.error = null;
+    this._emitChange();
+    this.persist();
+  }
 
   private _handleAddUser(action: Action): void {
     const { user } = action.payload as { user: User };
@@ -178,6 +189,25 @@ class Store {
     this.persist();
   }
 
+  private _handleToggleLike(action: Action): void {
+    const { postId, userId } = action.payload as { postId: string; userId: string };
+    let likes: string[] = Array.isArray(this._myState.likesByPost[postId]) ? this._myState.likesByPost[postId] : [];
+
+    if (likes.includes(userId)) {
+      likes = likes.filter(id => id !== userId);
+    } else {
+      likes.push(userId);
+    }
+
+    this._myState.likesByPost[postId] = likes;
+    this._emitChange();
+    this.persist();
+  }
+
+  isPostLikedByUser(postId: string, userId: string): boolean {
+    return Array.isArray(this._myState.likesByPost[postId]) && this._myState.likesByPost[postId].includes(userId);
+  }
+
   persist(): void {
     localStorage.setItem('flux:state', JSON.stringify(this._myState));
   }
@@ -208,7 +238,10 @@ class Store {
     return !!this._myState.visibleComments[postId];
   }
 
-  // other existing getters below...
+  getLikes(postId: string): number {
+    return this._myState.likesByPost[postId]?.length || 0;
+  }
+
   getCurrentUser(): User | null {
     return this._myState.currentUser;
   }
