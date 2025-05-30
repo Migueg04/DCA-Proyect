@@ -126,15 +126,30 @@ class Store {
     this._emitChange();
 
     setTimeout(() => {
-      const user = this._myState.users.find(u => u.email === email && u.password === password);
-      this._myState.currentUser = user || null;
-      this._myState.isAuthenticated = !!user;
+      const user = this._myState.users.find(u => u.email === email);
+
+      if (!user) {
+        alert('Usuario no registrado.');
+        this._myState.currentUser = null;
+        this._myState.isAuthenticated = false;
+        this._myState.error = 'Usuario no registrado.';
+      } else if (user.password !== password) {
+        alert('Contraseña incorrecta.');
+        this._myState.currentUser = null;
+        this._myState.isAuthenticated = false;
+        this._myState.error = 'Contraseña incorrecta.';
+      } else {
+        this._myState.currentUser = user;
+        this._myState.isAuthenticated = true;
+        this._myState.error = null;
+      }
+
       this._myState.isLoading = false;
-      this._myState.error = user ? null : 'Email o contraseña incorrectos';
       this._emitChange();
       this.persist();
     }, 1000);
   }
+
 
   private _handleLogoutUser(): void {
     this._myState.currentUser = null;

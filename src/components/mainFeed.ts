@@ -3,7 +3,7 @@ import { createDropCard, Drop } from './dropCard';
 const mockDrops: Drop[] = [
   {
     id: 'post-1',
-    username: 'KEVINDEVELOPER',
+    username: 'Nayoooo_Nesa',
     verified: 'https://cdn-icons-png.flaticon.com/512/5253/5253968.png',
     profileImage: 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/fb/Minecraft-creeper-face.jpg/960px-Minecraft-creeper-face.jpg',
     content: 'Hola, me encanta este juegoo',
