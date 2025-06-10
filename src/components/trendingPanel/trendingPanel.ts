@@ -1,5 +1,7 @@
 // src/components/trending-panel.ts
 import { Friend, News } from '../../utils/types/types';
+import FriendsList from './friendsList';
+import NewsList from './newsList';
 
 
 class TrendingPanel extends HTMLElement {
@@ -50,10 +52,10 @@ class TrendingPanel extends HTMLElement {
       </div>
     `;
 
-    const friendsList = this.shadowRoot!.querySelector('friends-list') as any;
+    const friendsList = this.shadowRoot!.querySelector('friends-list') as FriendsList;
     friendsList.data = friends;
 
-    const newsList = this.shadowRoot!.querySelector('news-list') as any;
+    const newsList = this.shadowRoot!.querySelector('news-list') as NewsList;
     newsList.data = news;
   }
 }
