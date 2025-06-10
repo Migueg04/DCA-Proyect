@@ -3,7 +3,7 @@ import Root from "./components/root/root";
 import Comments from "./components/comments/comments";
 import Button from "./components/dropButton/dropButton";
 import Section from "./components/comments/sectionComments";
-import './components/trendingPanel';
+import './components/trendingPanel/trendingPanel';
 import './components/Sidebar';
 import './components/searchbar';
 import './components/mainFeed';
@@ -16,9 +16,15 @@ import RegisterForm from "./components/login/register";
 import LogOutBtn from "./components/profilePage/logOutBtn";
 import RightBar from "./components/profilePage/friendsBar";
 import CreateDropModal from './components/dropButton/createDropModal';
+import FriendsList from "./components/trendingPanel/friendsList";
+import NewsList from "./components/trendingPanel/newsList";
+import TrendingPanel from "./components/trendingPanel/trendingPanel";
 
 
 customElements.define("comments-component", Comments);
+customElements.define('friends-list', FriendsList);
+customElements.define('news-list', NewsList);
+customElements.define('trending-panel', TrendingPanel);
 customElements.define("button-component", Button);
 customElements.define("section-component", Section);
 customElements.define('login-form', LoginForm);
