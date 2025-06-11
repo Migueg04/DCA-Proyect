@@ -13,6 +13,7 @@ export const UserActionsType = {
   GET_USER_BY_EMAIL: 'GET_USER_BY_EMAIL'
 };
 
+
 export interface User {
   id: string;
   email: string;
