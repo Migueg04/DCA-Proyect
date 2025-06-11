@@ -1,3 +1,6 @@
+import { store } from "../../Flux/Store";
+import { createPost } from "../../services/postService";
+
 class CreateDropModal extends HTMLElement {
   shadow: ShadowRoot;
 
@@ -17,95 +20,89 @@ class CreateDropModal extends HTMLElement {
     const closeBtn = this.shadow.querySelector('#closeBtn') as HTMLButtonElement;
     const imgInput = this.shadow.querySelector('#imgUpload') as HTMLInputElement;
 
-    dropBtn?.addEventListener('click', () => {
-      const content = textarea?.value.trim();
-      const imageFile = imgInput?.files?.[0];
+    closeBtn?.addEventListener('click', () => this.remove());
 
+    dropBtn?.addEventListener('click', () => {
+      const content = textarea.value.trim();
       if (!content) return alert('Tu drop está vacío');
 
-      const reader = new FileReader();
-      reader.onload = () => {
-        const imageUrl = reader.result?.toString() || '';
-        const newDrop = {
-          username: 'PlayerOne',
-          verified: 'https://cdn-icons-png.flaticon.com/512/5253/5253968.png',
-          profileImage: 'https://i.pinimg.com/736x/e0/5a/19/e05a1996300035d853b03f8af6ce0c4a.jpg',
-          content,
-          image: imageFile ? imageUrl : ''
-        };
+      const currentUser = store.getCurrentUser();
+      if (!currentUser) {
+        alert('Debes iniciar sesión para publicar.');
+        return;
+      }
 
-        const oldDrops = JSON.parse(localStorage.getItem('userDrops') || '[]');
-        localStorage.setItem('userDrops', JSON.stringify([newDrop, ...oldDrops]));
-        window.dispatchEvent(new CustomEvent('drop-added'));
-        this.remove();
+      const imageFile = imgInput.files?.[0];
+      const handlePost = async (imageUrl: string) => {
+        try {
+          await createPost(
+            currentUser.id,
+            currentUser.username,
+            content,
+            imageUrl
+          );
+          window.dispatchEvent(new CustomEvent('drop-added'));
+          this.remove();
+        } catch (err: any) {
+          console.error('Error creando post:', err);
+          alert('No se pudo crear el post: ' + err.message);
+        }
       };
 
       if (imageFile) {
-  reader.readAsDataURL(imageFile);
-} else {
-  const imageUrl = '';
-  const newDrop = {
-    username: 'PlayerOne',
-    verified: 'https://cdn-icons-png.flaticon.com/512/5253/5253968.png',
-    profileImage: 'https://i.pinimg.com/736x/e0/5a/19/e05a1996300035d853b03f8af6ce0c4a.jpg',
-    content,
-    image: imageUrl
-  };
-
-  const oldDrops = JSON.parse(localStorage.getItem('userDrops') || '[]');
-  localStorage.setItem('userDrops', JSON.stringify([newDrop, ...oldDrops]));
-  window.dispatchEvent(new CustomEvent('drop-added'));
-  this.remove();
-}
-
+        const reader = new FileReader();
+        reader.onload = () => {
+          handlePost(reader.result?.toString() || '');
+        };
+        reader.readAsDataURL(imageFile);
+      } else {
+        handlePost('');
+      }
     });
-
-    closeBtn?.addEventListener('click', () => this.remove());
   }
 
   render() {
     this.shadow.innerHTML = `
       <style>
-        .overlay {
+        
+        :host {
           position: fixed;
           inset: 0;
-          background-color: rgba(0, 0, 0, 0.7);
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          z-index: 9999;
+          display: block;
+          z-index: 10000;
         }
-
+        .overlay {
+          position: absolute;
+          inset: 0;
+          background-color: rgba(0, 0, 0, 0.7);
+        }
         .modal {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
           background: #1a1035;
           border-radius: 20px;
           padding: 1.5rem;
           width: 90vw;
           max-width: 550px;
           color: white;
-          position: relative;
-          align-items: center;
+          box-shadow: 0 0 20px rgba(0,0,0,0.5);
         }
-
-    textarea {
-
-      height: 150px;
-      resize: none;
-      font-family: 'Nunito', sans-serif;
-      font-size: 1rem;
-      padding: 1rem;
-      border-radius: 12px;
-      background: #ffffff33;
-      color: white;
-      border: none;
-      width: 100%;
-      max-width: 500px;
-    }
-
-
+        textarea {
+          width: 97%;
+          height: 100px;
+          resize: none;
+          font-family: 'Nunito', sans-serif;
+          font-size: 1rem;
+          padding: 1rem;
+          border-radius: 12px;
+          background: #ffffff33;
+          color: white;
+          border: none;
+          margin-bottom: 1rem;
+        }
         #dropBtn {
-          margin-top: 1rem;
-          float: right;
           background-color: #ea3b81;
           color: white;
           padding: 0.5rem 1.2rem;
@@ -113,8 +110,8 @@ class CreateDropModal extends HTMLElement {
           border-radius: 8px;
           cursor: pointer;
           font-size: 1rem;
+          float: right;
         }
-
         #closeBtn {
           position: absolute;
           top: 10px;
@@ -125,84 +122,45 @@ class CreateDropModal extends HTMLElement {
           color: white;
           cursor: pointer;
         }
-
         .img-upload {
-          filter: brightness(0) invert(1);
-          margin-top: 1rem;
           display: flex;
           align-items: center;
           gap: 1rem;
+          margin-bottom: 1rem;
         }
-          @media (max-width: 480px) {
-        .modal {
-          padding: 1rem;
-          border-radius: 16px;
-          width: 92vw;
-          max-width: 92vw;
-        }
-
-        textarea {
-          height: 120px;
-          font-size: 1rem;
-          border-radius: 10px;
-        }
-
-        .img-upload {
-          flex-direction: row;
-          justify-content: space-between;
-          gap: 0.5rem;
-          margin-top: 1rem;
-        }
-
         .img-upload img {
-          width: 26px;
-          height: 26px;
+          cursor: pointer;
         }
-
-        .img-upload button {
-          flex-shrink: 0;
-          font-size: 0.8rem;
-          padding: 0.3rem 0.6rem;
+        @media (max-width: 480px) {
+          .modal {
+            padding: 1rem;
+            width: 92vw;
+            max-width: 92vw;
+          }
+          textarea {
+            height: 120px;
+          }
+          #dropBtn {
+            width: 100%;
+            float: none;
+            padding: 0.6rem;
+            font-size: 1rem;
+            border-radius: 10px;
+          }
         }
-
-        #dropBtn {
-          margin-top: 1.5rem;
-          width: 100%;
-          float: none;
-          padding: 0.6rem;
-          font-size: 1rem;
-          border-radius: 10px;
-        }
-
-        .profile img {
-          width: 44px;
-          height: 44px;
-        }
-
-        #closeBtn {
-          top: 8px;
-          left: 10px;
-          font-size: 1.2rem;
-        }
-      }
       </style>
-      <div class="overlay">
-        <div class="modal">
-          <button id="closeBtn">&times;</button>
-          <div class="profile">
-            <img src="https://i.pinimg.com/736x/e0/5a/19/e05a1996300035d853b03f8af6ce0c4a.jpg"
-            style="width: 50px; height: 50px; border-radius: 50%; margin-top: 1rem"; margin-bottom: 1rem; margin-left: 1rem/>
-          </div>
-          <textarea id="drop-text" placeholder="¿Qué estás pensando?"></textarea>
-          <div class="img-upload">
-            <label>
-              <input type="file" accept="image/*" id="imgUpload" style="display: none;" />
-              <img src="https://img.icons8.com/ios-filled/50/image.png" width="28" style="cursor:pointer;" />
-            </label>
-            <button disabled>GIF</button>
-          </div>
-          <button id="dropBtn">Drop!</button>
+      <div class="overlay"></div>
+      <div class="modal">
+        <button id="closeBtn">&times;</button>
+        <textarea id="drop-text" placeholder="¿Qué estás pensando?"></textarea>
+        <div class="img-upload">
+          <label>
+            <input type="file" accept="image/*" id="imgUpload" style="display: none;" />
+            <img src="https://img.icons8.com/ios-filled/50/image.png" width="28" />
+          </label>
+          <button disabled>GIF</button>
         </div>
+        <button id="dropBtn">Drop!</button>
       </div>
     `;
   }

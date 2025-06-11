@@ -36,7 +36,7 @@ class ProfilePage extends HTMLElement {
     this.shadowRoot.innerHTML = `
       <style>
         .container {
-          margin-right: 100px; /* deja espacio para el right-bar */
+          margin-right: 100px; 
           width: calc(100% - 100px);
           height: 100%;
           display: flex;

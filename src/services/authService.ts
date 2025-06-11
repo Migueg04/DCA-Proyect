@@ -23,7 +23,7 @@ export async function registerUser(
     id: cred.user.uid,
     email,
     ...profile,
-    profileimg: "",
+    profileimg: "https://i.pinimg.com/736x/e0/5a/19/e05a1996300035d853b03f8af6ce0c4a.jpg",
     bgimg: "",
     friends: "",
   });
@@ -33,7 +33,7 @@ export async function registerUser(
     email,
     password,
     ...profile,
-    profileimg: "",
+    profileimg: "https://i.pinimg.com/736x/e0/5a/19/e05a1996300035d853b03f8af6ce0c4a.jpg",
     bgimg: "",
     friends: "",
     username: profile.username,
