@@ -1,26 +1,27 @@
-import { store } from "../Flux/Store";
-import { CommentActions, LikeActions } from "../Flux/Actions";
+
+import { store } from '../Flux/Store';
+import { CommentActions, LikeActions } from '../Flux/Actions';
 
 export interface Drop {
-  id: string;
-  username: string;
-  verified: string;
-  profileImage: string;
-  content: string;
-  image?: string;
+	id: string;
+	username: string;
+	verified: string;
+	profileImage: string;
+	content: string;
+	image?: string;
 }
 
 export function createDropCard(drop: Drop): HTMLElement {
-  const card = document.createElement("div");
-  card.className = "drop-card-wrapper";
+	const card = document.createElement('div');
+	card.className = 'drop-card-wrapper';
 
-  const uniqueId = drop.id;
-  const profileImage = drop.profileImage || "assets/default-profile.png";
-  const verified = drop.verified || "assets/default-verified.png";
-  const image = drop.image || "";
-  const currentUser = store.getCurrentUser();
+	const uniqueId = drop.id;
+	const profileImage = drop.profileImage || 'assets/default-profile.png';
+	const verified = drop.verified || 'assets/default-verified.png';
+	const image = drop.image || '';
+	const currentUser = store.getCurrentUser();
 
-  card.innerHTML = `
+	card.innerHTML = `
     <style>
       .drop-card-wrapper {
         width: 70vw;
@@ -28,7 +29,6 @@ export function createDropCard(drop: Drop): HTMLElement {
         flex-direction: column;
         align-items: center;
       }
-
       .drop-card {
         display: flex;
         flex-direction: row;
@@ -42,7 +42,6 @@ export function createDropCard(drop: Drop): HTMLElement {
         width: 100%;
         align-items: flex-start;
       }
-
       .delete-button {
         background: #e74c3c;
         color: white;
@@ -54,20 +53,17 @@ export function createDropCard(drop: Drop): HTMLElement {
       .delete-button:hover {
         background: #c0392b;
       }
-
       .user-info {
         display: flex;
         align-items: center;
         gap: 5%;
       }
-
       .drop-image {
         width: 230px;
         height: 230px;
         object-fit: cover;
         border-radius: 12px;
       }
-
       .drop-right {
         flex: 1;
         display: flex;
@@ -75,14 +71,12 @@ export function createDropCard(drop: Drop): HTMLElement {
         justify-content: flex-start;
         min-height: 230px;
       }
-
       .drop-header {
         display: flex;
         align-items: center;
         gap: 0.4rem;
         margin-bottom: 0.5rem;
       }
-
       .profile-img {
         width: 35px;
         height: 35px;
@@ -90,23 +84,19 @@ export function createDropCard(drop: Drop): HTMLElement {
         object-fit: cover;
         display: block;
       }
-
       .username {
         font-weight: bold;
         color: white;
       }
-
       .verified-icon {
         width: 16px;
         height: 16px;
       }
-
       .drop-text {
         font-size: 0.95rem;
         line-height: 1.4;
         color: white;
       }
-
       .comment-button, .like-button {
         background: pink;
         color: black;
@@ -116,28 +106,23 @@ export function createDropCard(drop: Drop): HTMLElement {
         border-radius: 8px;
         transition: transform 0.2s;
       }
-
       .like-button.liked {
         background: #ea3b81;
         color: white;
       }
-
       .like-button.bounce {
         animation: bounce 0.4s ease;
       }
-
       @keyframes bounce {
-        0%   { transform: scale(1); }
-        50%  { transform: scale(1.3); }
+        0% { transform: scale(1); }
+        50% { transform: scale(1.3); }
         100% { transform: scale(1); }
       }
-
       .drop-actions {
         display: flex;
         gap: 2%;
         padding-top: 30px;
       }
-
       .comments-container {
         max-height: 0;
         overflow: hidden;
@@ -145,33 +130,16 @@ export function createDropCard(drop: Drop): HTMLElement {
         padding: 0;
         margin-bottom: 0;
       }
-
       .comments-container.show {
         max-height: 500px;
         padding: 20px 0;
         margin-bottom: 2rem;
       }
-
-      @media screen and (max-width: 768px) {
-        .drop-card {
-          flex-direction: column;
-          align-items: center;
-        }
-
-        .drop-image {
-          width: 100%;
-          height: auto;
-        }
-
-        .drop-right {
-          width: 100%;
-        }
-      }
     </style>
 
     <div class="drop-card">
       <div class="drop-image-container">
-        ${image ? `<img src="${image}" alt="drop image" class="drop-image" />` : ""}
+        ${image ? `<img src="${image}" alt="drop image" class="drop-image" />` : ''}
       </div>
       <div class="drop-content">
         <div class="drop-header">
@@ -186,10 +154,9 @@ export function createDropCard(drop: Drop): HTMLElement {
         <div class="drop-actions">
           <button class="comment-button" type="button">💬 Comment</button>
           <button class="like-button" type="button">❤️ <span class="like-count">0</span></button>
-          ${drop.username === currentUser?.username
-          ? `<button class="delete-button" type="button">🗑 Eliminar</button>`
-          : ""}
+          <button class="delete-button" type="button">🗑 Eliminar</button>
         </div>
+
       </div>
     </div>
 
@@ -198,48 +165,47 @@ export function createDropCard(drop: Drop): HTMLElement {
     </div>
   `;
 
-  const commentButton = card.querySelector(".comment-button") as HTMLButtonElement;
-  const likeButton = card.querySelector(".like-button") as HTMLButtonElement;
-  const likeCount = card.querySelector(".like-count") as HTMLElement;
-  const deleteButton = card.querySelector(".delete-button") as HTMLButtonElement | null;
+	const commentButton = card.querySelector('.comment-button') as HTMLButtonElement;
+	const likeButton = card.querySelector('.like-button') as HTMLButtonElement;
+	const likeCount = card.querySelector('.like-count') as HTMLElement;
+	const deleteButton = card.querySelector('.delete-button') as HTMLButtonElement | null;
 
-deleteButton?.addEventListener("click", () => {
-  const confirmed = confirm("¿Estás segura de eliminar este drop?");
-  if (!confirmed) return;
+	commentButton.addEventListener('click', () => {
+		CommentActions.toggleComments(uniqueId);
+	});
 
-  const currentDrops = JSON.parse(localStorage.getItem("userDrops") || "[]");
-  const updatedDrops = currentDrops.filter((d: Drop) => d.id !== drop.id);
-  localStorage.setItem("userDrops", JSON.stringify(updatedDrops));
-  window.dispatchEvent(new CustomEvent("drop-deleted"));
-});
+	likeButton.addEventListener('click', () => {
+		if (currentUser) {
+			LikeActions.toggleLike(uniqueId, currentUser.id);
+			likeButton.classList.add('bounce');
+			setTimeout(() => likeButton.classList.remove('bounce'), 400);
+		}
+	});
 
+	deleteButton?.addEventListener('click', () => {
+		const confirmed = confirm('¿Estás segura de eliminar este drop?');
+		if (!confirmed) return;
 
-  commentButton.addEventListener("click", () => {
-    CommentActions.toggleComments(uniqueId);
-  });
+		const currentDrops = JSON.parse(localStorage.getItem('userDrops') || '[]');
+		const updatedDrops = currentDrops.filter((d: Drop) => d.id !== drop.id);
+		localStorage.setItem('userDrops', JSON.stringify(updatedDrops));
+		window.dispatchEvent(new CustomEvent('drop-deleted'));
+	});
 
-  likeButton.addEventListener("click", () => {
-    if (currentUser) {
-      LikeActions.toggleLike(uniqueId, currentUser.id);
-      likeButton.classList.add("bounce");
-      setTimeout(() => likeButton.classList.remove("bounce"), 400);
-    }
-  });
+	store.subscribe(() => {
+		const visible = store.areCommentsVisible(uniqueId);
+		const container = card.querySelector(`#${uniqueId}`);
+		if (container) container.classList.toggle('show', visible);
 
-  store.subscribe(() => {
-    const visible = store.areCommentsVisible(uniqueId);
-    const container = card.querySelector(`#${uniqueId}`);
-    if (container) container.classList.toggle("show", visible);
+		const likes = store.getLikes(uniqueId);
+		likeCount.textContent = likes.toString();
 
-    const likes = store.getLikes(uniqueId);
-    likeCount.textContent = likes.toString();
+		if (currentUser && store.isPostLikedByUser(uniqueId, currentUser.id)) {
+			likeButton.classList.add('liked');
+		} else {
+			likeButton.classList.remove('liked');
+		}
+	});
 
-    if (currentUser && store.isPostLikedByUser(uniqueId, currentUser.id)) {
-      likeButton.classList.add("liked");
-    } else {
-      likeButton.classList.remove("liked");
-    }
-  });
-
-  return card;
+	return card;
 }

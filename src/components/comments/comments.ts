@@ -28,7 +28,7 @@ class Comments extends HTMLElement {
 
   addListeners() {
     const button = this.querySelector("button") as HTMLButtonElement | null;
-    const input = this.querySelector("#input-comments-textfield") as HTMLInputElement | null;
+    const input = this.querySelector(`#input-comments-textfield-${this.postId}`) as HTMLInputElement | null;
     const user = store.getCurrentUser();
 
     if (button && input && user) {
@@ -134,7 +134,12 @@ class Comments extends HTMLElement {
           <p style="color:white">No comments yet</p>
         </div>
         <div id="input-comments">
-          <input id="input-comments-textfield" type="text" placeholder="Add a comment...">
+          <input
+            id="input-comments-textfield-${this.postId}"
+            name="comment-${this.postId}"
+            type="text"
+            placeholder="Add a comment..."
+          />
           <button>Comment</button>
         </div>
       </div>
