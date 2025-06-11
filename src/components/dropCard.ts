@@ -43,6 +43,18 @@ export function createDropCard(drop: Drop): HTMLElement {
         align-items: flex-start;
       }
 
+      .delete-button {
+        background: #e74c3c;
+        color: white;
+        border: none;
+        padding: 0.5rem 1rem;
+        border-radius: 8px;
+        cursor: pointer;
+      }
+      .delete-button:hover {
+        background: #c0392b;
+      }
+
       .user-info {
         display: flex;
         align-items: center;
@@ -174,6 +186,9 @@ export function createDropCard(drop: Drop): HTMLElement {
         <div class="drop-actions">
           <button class="comment-button" type="button">💬 Comment</button>
           <button class="like-button" type="button">❤️ <span class="like-count">0</span></button>
+          ${drop.username === currentUser?.username
+          ? `<button class="delete-button" type="button">🗑 Eliminar</button>`
+          : ""}
         </div>
       </div>
     </div>
@@ -186,6 +201,18 @@ export function createDropCard(drop: Drop): HTMLElement {
   const commentButton = card.querySelector(".comment-button") as HTMLButtonElement;
   const likeButton = card.querySelector(".like-button") as HTMLButtonElement;
   const likeCount = card.querySelector(".like-count") as HTMLElement;
+  const deleteButton = card.querySelector(".delete-button") as HTMLButtonElement | null;
+
+deleteButton?.addEventListener("click", () => {
+  const confirmed = confirm("¿Estás segura de eliminar este drop?");
+  if (!confirmed) return;
+
+  const currentDrops = JSON.parse(localStorage.getItem("userDrops") || "[]");
+  const updatedDrops = currentDrops.filter((d: Drop) => d.id !== drop.id);
+  localStorage.setItem("userDrops", JSON.stringify(updatedDrops));
+  window.dispatchEvent(new CustomEvent("drop-deleted"));
+});
+
 
   commentButton.addEventListener("click", () => {
     CommentActions.toggleComments(uniqueId);

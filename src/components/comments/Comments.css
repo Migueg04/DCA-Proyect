@@ -1,114 +1,111 @@
-#comments-container{
-    background-color: rgba(255, 254, 255, 0.33);
-    border-radius: 15px;
-    max-height: fit-content;
-    width: 40vw;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+#comments-container {
+	background-color: rgba(255, 254, 255, 0.33);
+	border-radius: 15px;
+	max-height: fit-content;
+	width: 40vw;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
 }
 
-.message{
-    margin: 2%;
-    color: #ffffff
+.message {
+	margin: 2%;
+	color: #ffffff;
 }
 
 .username {
-    font-weight: bold;
-    color: white;
-    display: flex;
-    font-weight: bold;
+	font-weight: bold;
+	color: white;
+	display: flex;
+	font-weight: bold;
 }
-
 
 .verified-icon {
-    width: 16px;
-    height: 16px;
-    margin-left: 2%;
+	width: 16px;
+	height: 16px;
+	margin-left: 2%;
 }
 
-#comments{
-    width: 70%;
-    max-height: fit-content;
-    margin-top: 3vh;
-    font-family: "Nunito";
+#comments {
+	width: 70%;
+	max-height: fit-content;
+	margin-top: 3vh;
+	font-family: 'Nunito';
 }
 
-#input-comments{
-    margin-top: 20px;
-    display: flex;
-    justify-content: center;
-    margin-bottom: 10px;
-    width: 100%;
+#input-comments {
+	margin-top: 20px;
+	display: flex;
+	justify-content: center;
+	margin-bottom: 10px;
+	width: 100%;
 }
 
-input{
-    height: 56%;
-    border: none;
-    border-top-left-radius: 10px;
-    border-bottom-left-radius: 10px;
-    border-top-right-radius: 0;
-    border-bottom-right-radius: 0;
-    outline: none;
-    font-size: 16px;
-    background-color: #ffffff;
-    color: #100c2a; /* texto del placeholder */
-    font-weight: 500;
-    width: 75%;
-    padding: 10px;
-    
+input {
+	height: 56%;
+	border: none;
+	border-top-left-radius: 10px;
+	border-bottom-left-radius: 10px;
+	border-top-right-radius: 0;
+	border-bottom-right-radius: 0;
+	outline: none;
+	font-size: 16px;
+	background-color: #ffffff;
+	color: #100c2a; /* texto del placeholder */
+	font-weight: 500;
+	width: 75%;
+	padding: 10px;
 }
 
+@media (max-width: 425px) {
+	#comments-container {
+		background-color: rgb(80, 130, 130);
+		max-height: fit-content;
+		width: 75vw;
+	}
 
-@media (max-width:425px){
-    #comments-container{
-        background-color: rgb(80, 130, 130);
-        max-height: fit-content;
-        width: 75vw;
-    }
+	#comments {
+		width: 85%;
+		height: 80%;
+	}
 
-    #comments{
-        width: 85%;
-        height: 80%;
-    }
-    
-    #input-comments{
-        margin-top: 20px;
-        display: flex;
-        justify-content: center;
-        margin-bottom: 10px;
-        width: 100%;
-    }
+	#input-comments {
+		margin-top: 20px;
+		display: flex;
+		justify-content: center;
+		margin-bottom: 10px;
+		width: 100%;
+	}
 
-    button{
-        background-color: #EA3B81;
-        font-family: "Nunito";
-        font-weight: bold;
-        border-top-left-radius: 0;
-        border-bottom-left-radius: 0;
-        border-top-right-radius: 10px;
-        border-bottom-right-radius: 10px;
-        border: none;
-        width:20%;
-        color: white;
-        cursor: pointer;
-        font-size: 12px;
-        height: 100%;  
-    }
+	button {
+		background-color: #ea3b81;
+		font-family: 'Nunito';
+		font-weight: bold;
+		border-top-left-radius: 0;
+		border-bottom-left-radius: 0;
+		border-top-right-radius: 10px;
+		border-bottom-right-radius: 10px;
+		border: none;
+		width: 20%;
+		color: white;
+		cursor: pointer;
+		font-size: 12px;
+		height: 100%;
+	}
 
-    input{
-        border: none;
-        border-top-left-radius: 10px;
-        border-bottom-left-radius: 10px;
-        border-top-right-radius: 0;
-        border-bottom-right-radius: 0;
-        outline: none;
-        font-size: 12px;
-        background-color: #ffffff;
-        color: #100c2a; 
-        font-weight: 500;
-        width: 70%;
-        height: 56%;
-    }
+	input {
+		border: none;
+		border-top-left-radius: 10px;
+		border-bottom-left-radius: 10px;
+		border-top-right-radius: 0;
+		border-bottom-right-radius: 0;
+		outline: none;
+		font-size: 12px;
+		background-color: #ffffff;
+		color: #100c2a;
+		font-weight: 500;
+		width: 70%;
+		height: 56%;
+	}
 }

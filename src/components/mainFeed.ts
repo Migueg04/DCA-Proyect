@@ -28,6 +28,8 @@ class MainFeed extends HTMLElement {
   connectedCallback() {
     this.render();
     window.addEventListener('drop-added', () => this.render());
+    window.addEventListener("drop-deleted", () => this.render());
+
   }
 
   render() {
