@@ -25,5 +25,4 @@ export interface User {
   friends?: Friend[];
   level?: number;
   points?: number;
-  // Otros campos que tengas
 }
