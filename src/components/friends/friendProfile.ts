@@ -8,7 +8,7 @@ export enum ProfileCardAttribute {
   friends = 'friends',
 }
 
-class ProfileCard extends HTMLElement {
+class FriendProfile extends HTMLElement{
   bgimg?: string;
   profileimg?: string;
   name?: string;
@@ -39,7 +39,6 @@ class ProfileCard extends HTMLElement {
 
   render() {
     if (!this.shadowRoot) return;
-    console.log(this.friends);
 
     this.shadowRoot.innerHTML = `
         <style>
@@ -208,10 +207,9 @@ class ProfileCard extends HTMLElement {
             <div class="body">
                 <div class="name">${this.name ?? ''}</div>
                 <div class="username">@${this.username ?? ''}</div>
-                <div class="age">${this.age ? `${this.age} years old` : ''}</div>
                 <div class="bio">${this.bio ?? ''}</div>
                 <div class="footer">
-                    <span>Friends: ${this.friends}</span>
+                    <span>Friends: ${this.friends?.length}</span>
                     <log-out-btn></log-out-btn>
                 </div>
             </div>
@@ -220,4 +218,4 @@ class ProfileCard extends HTMLElement {
   }
 }
 
-export default ProfileCard;
+export default FriendProfile

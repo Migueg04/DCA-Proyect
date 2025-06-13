@@ -38,4 +38,7 @@ export default {
         // Ruta del directorio de salida, resuelta a partir del directorio actual
         path: path.resolve(__dirname, 'dist'),
     },
+    devServer: {
+        historyApiFallback: true
+    }
 };

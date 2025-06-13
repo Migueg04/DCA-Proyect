@@ -1,6 +1,6 @@
 // src/components/trending-panel.ts
 import { Friend, News } from '../../utils/types/types';
-import FriendsList from './friendsList';
+import FriendsList from '../friends/friendsList';
 import NewsList from './newsList';
 
 

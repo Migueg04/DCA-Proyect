@@ -16,9 +16,11 @@ import RegisterForm from "./components/login/register";
 import LogOutBtn from "./components/profilePage/logOutBtn";
 import RightBar from "./components/profilePage/friendsBar";
 import CreateDropModal from './components/dropButton/createDropModal';
-import FriendsList from "./components/trendingPanel/friendsList";
+import FriendsList from "./components/friends/friendsList";
 import NewsList from "./components/trendingPanel/newsList";
 import TrendingPanel from "./components/trendingPanel/trendingPanel";
+import FriendsInProfile from "./components/friends/friendsInProfile";
+import FriendProfile from "./components/friends/friendProfile";
 
 
 customElements.define("comments-component", Comments);
@@ -39,5 +41,6 @@ customElements.define('right-bar', RightBar);
 if (!customElements.get('create-drop-modal')) {
   customElements.define('create-drop-modal', CreateDropModal);
 }
-
+customElements.define('friends-inprofile', FriendsInProfile)
+customElements.define('friend-profile', FriendProfile)
 

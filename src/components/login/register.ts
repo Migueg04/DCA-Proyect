@@ -73,7 +73,7 @@ export class RegisterForm extends HTMLElement {
       birthdate: birthdate,
       bio: '',
       age: calculatedAge,
-      friends: '0',
+      friends: [],
       profileimg: '',
       bgimg: ''
     };

@@ -1,4 +1,4 @@
-
+import { Friend } from '../utils/types/types';
 import { AppDispatcher } from './Dispatcher';
 
 export const NavigateActionsType = {
@@ -11,7 +11,9 @@ export const UserActionsType = {
   LOGIN_USER: 'LOGIN_USER',
   LOGOUT_USER: 'LOGOUT_USER',
   ADD_USER: 'ADD_USER',
-  GET_USER_BY_EMAIL: 'GET_USER_BY_EMAIL'
+  GET_USER_BY_EMAIL: 'GET_USER_BY_EMAIL',
+  ADD_FRIEND_TO_PROFILE: 'ADD_FRIEND_TO_PROFILE',
+  REMOVE_FRIEND_FROM_PROFILE: 'REMOVE_FRIEND_FROM_PROFILE' 
 };
 
 export const CommentActionsType = {
@@ -31,7 +33,7 @@ export interface User {
   username: string;
   bio: string;
   age: string;
-  friends: string;
+  friends: Friend[];
   profileimg: string;
   bgimg: string;
 }
@@ -94,6 +96,20 @@ export const UserActions = {
     AppDispatcher.dispatch({
       type: UserActionsType.GET_USER_BY_EMAIL,
       payload: { email }
+    });
+  },
+
+  addFriendToProfile: (friend: Friend) => {
+    AppDispatcher.dispatch({
+      type: UserActionsType.ADD_FRIEND_TO_PROFILE,
+      payload: { friend }
+    });
+  },
+
+  removeFriendFromProfile: (friendUsername: string) => {
+    AppDispatcher.dispatch({
+      type: UserActionsType.REMOVE_FRIEND_FROM_PROFILE,
+      payload: { friendUsername }
     });
   }
 };

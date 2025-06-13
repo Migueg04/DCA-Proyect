@@ -31,7 +31,7 @@ class ProfilePage extends HTMLElement {
     const username = currentUser?.username || "username";
     const bio = currentUser?.bio || "Welcome to my profile! 🎮";
     const age = currentUser?.age || "N/A";
-    const friends = currentUser?.friends || "3";
+    const friends = currentUser?.friends.length || "3";
 
     this.shadowRoot.innerHTML = `
       <style>
