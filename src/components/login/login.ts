@@ -1,4 +1,5 @@
-import { UserActions } from "../../Flux/Actions";
+import { NavigateActions } from "../../Flux/Actions";
+import { loginUser } from "../../services/authService";
 
 export class LoginForm extends HTMLElement {
   constructor() {
@@ -17,14 +18,33 @@ export class LoginForm extends HTMLElement {
         composed: true
       }));
     });
+
+   
+    this.shadowRoot?.querySelectorAll('.toggle-password').forEach(el => {
+      el.addEventListener('click', () => {
+        const targetId = el.getAttribute('data-target');
+        const input = this.shadowRoot?.querySelector(`#${targetId}`) as HTMLInputElement;
+        if (input) {
+          input.type = input.type === 'password' ? 'text' : 'password';
+          el.textContent = input.type === 'password' ? '👁️' : '🙈';
+        }
+      });
+    });
   }
 
-  handleSubmit(event: Event) {
+  async handleSubmit(event: Event) {
     event.preventDefault();
-    const form = event.target as HTMLFormElement;
+    const form = this.shadowRoot!.querySelector('form') as HTMLFormElement;
     const email = (form.querySelector('#email') as HTMLInputElement).value;
     const password = (form.querySelector('#password') as HTMLInputElement).value;
-    UserActions.loginUser(email, password);
+
+    try {
+      await loginUser(email, password);
+      NavigateActions.navigate('/');
+    } catch (error: any) {
+      console.error('Login error:', error);
+      alert('Error al iniciar sesión: ' + error.message);
+    }
   }
   
   render() {
@@ -48,7 +68,6 @@ export class LoginForm extends HTMLElement {
           background-position: center;
           background-repeat: no-repeat;
           background-attachment: fixed;
-          
           font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         }
 
@@ -85,7 +104,9 @@ export class LoginForm extends HTMLElement {
           font-weight: 500;
         }
 
-        input {
+        input[type="text"],
+        input[type="email"],
+        input[type="password"] {
           background: rgba(255, 255, 255, 0.1);
           border: 1px solid rgba(255, 255, 255, 0.2);
           border-radius: 12px;
@@ -105,6 +126,19 @@ export class LoginForm extends HTMLElement {
           border-color: rgba(255, 255, 255, 0.4);
           transform: translateY(-2px);
           box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .password-field {
+          position: relative;
+        }
+
+        .toggle-password {
+          position: absolute;
+          right: 15px;
+          top: 70%;
+          transform: translateY(-50%);
+          cursor: pointer;
+          user-select: none;
         }
 
         .forgot-password {
@@ -186,8 +220,8 @@ export class LoginForm extends HTMLElement {
             overflow-y: auto;
             padding: 20px 0;
             background-image: url('https://i.postimg.cc/tRc6sxS4/image-5.png');
-            background-size: cover; /* Asegura que cubra todo el contenedor */
-            background-position: center; /* Centra la imagen */
+            background-size: cover;
+            background-position: center;
             background-repeat: no-repeat;
           }
           .login-container {
@@ -230,8 +264,6 @@ export class LoginForm extends HTMLElement {
             font-size: 11px;
           }
         }
-
-        }
       </style>
 
       <div class="login-container">
@@ -248,14 +280,15 @@ export class LoginForm extends HTMLElement {
             <label for="email">Email id</label>
             <input id="email" type="email" placeholder="example@gmail.com" required />
           </div>
-          
-          <div class="input-group">
+        
+          <div class="input-group password-field">
             <label for="password">Password</label>
             <input id="password" type="password" placeholder="Must have at least 8 characters" required />
+            <span class="toggle-password" data-target="password">👁️</span>
           </div>
-          
+        
           <a href="#" class="forgot-password">Forgot password?</a>
-          
+        
           <button type="submit" class="login-button">Login</button>
         </form>
         

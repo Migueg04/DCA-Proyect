@@ -162,6 +162,7 @@ class Store {
     }, 1000);
   }
 
+
   private _handleLogoutUser(): void {
     this._myState.currentUser = null;
     this._myState.isAuthenticated = false;
@@ -215,92 +216,150 @@ class Store {
     this.persist();
   }
 
-  private _handleAddFriendToProfile(action: Action): void {
+   private async _handleAddFriendToProfile(action: Action): Promise<void> {
     const { friend } = action.payload as { friend: Friend };
-    if (this._myState.currentUser) {
+    
+    if (!this._myState.currentUser) {
+      console.error('No hay usuario autenticado para añadir amigo');
+      return;
+    }
+
+    try {
       // Verificar si el amigo ya existe para evitar duplicados
       const existingFriends = this._myState.currentUser.friends || [];
       const friendExists = existingFriends.some(f => f.username === friend.username);
       
-      if (!friendExists) {
-        const updatedFriends = [...existingFriends, friend];
-        this._myState.currentUser = {
-          ...this._myState.currentUser,
-          friends: updatedFriends
-        };
-        
-        // También actualizar en la lista de usuarios
-        this._myState.users = this._myState.users.map(user =>
-          user.id === this._myState.currentUser!.id 
-            ? { ...user, friends: updatedFriends }
-            : user
-        );
-        
-        this._emitChange();
-        this.persist();
+      if (friendExists) {
+        console.warn(`El amigo ${friend.name} ya está en la lista`);
+        return;
       }
+
+      // Crear la nueva lista de amigos
+      const updatedFriends = [...existingFriends, friend];
+      
+      // Actualizar currentUser inmediatamente
+      this._myState.currentUser = {
+        ...this._myState.currentUser,
+        friends: updatedFriends
+      };
+      
+      // También actualizar en la lista de usuarios para mantener consistencia
+      this._myState.users = this._myState.users.map(user =>
+        user.id === this._myState.currentUser!.id 
+          ? { ...user, friends: updatedFriends }
+          : user
+      );
+      
+      // Limpiar errores
+      this._myState.error = null;
+      
+      console.log(`✅ Amigo "${friend.name}" (@${friend.username}) añadido exitosamente`);
+      console.log(`📊 Total de amigos: ${updatedFriends.length}`);
+      
+      // Emitir cambios INMEDIATAMENTE
+      this._emitChange();
+      
+      // Persistir de forma asíncrona (sin bloquear)
+      this.persist().catch(error => {
+        console.error('Error al persistir después de añadir amigo:', error);
+      });
+      
+    } catch (error) {
+      console.error('❌ Error al añadir amigo:', error);
+      this._myState.error = 'Error al añadir el amigo';
+      this._emitChange();
     }
   }
 
-private _handleRemoveFriendFromProfile(action: Action): void {
-  const { friendUsername } = action.payload as { friendUsername: string };
-  
-  if (!this._myState.currentUser) {
-    console.error('No hay usuario autenticado para eliminar amigo');
-    return;
-  }
-
-  if (!friendUsername) {
-    console.error('Username del amigo no proporcionado');
-    return;
-  }
-
-  try {
-    // Obtener la lista actual de amigos
-    const existingFriends = this._myState.currentUser.friends || [];
+  private async _handleRemoveFriendFromProfile(action: Action): Promise<void> {
+    const { friendUsername } = action.payload as { friendUsername: string };
     
-    // Verificar si el amigo existe antes de eliminarlo
-    const friendToRemove = existingFriends.find(friend => friend.username === friendUsername);
-    
-    if (!friendToRemove) {
-      console.warn(`El amigo con username "${friendUsername}" no se encuentra en la lista`);
+    if (!this._myState.currentUser) {
+      console.error('No hay usuario autenticado para eliminar amigo');
       return;
     }
 
-    // Filtrar el amigo de la lista
-    const updatedFriends = existingFriends.filter(friend => friend.username !== friendUsername);
-    
-    // Crear una copia del usuario actual con la lista actualizada
-    const updatedCurrentUser = {
-      ...this._myState.currentUser,
-      friends: updatedFriends
-    };
-    
-    // Actualizar currentUser
-    this._myState.currentUser = updatedCurrentUser;
-    
-    // También actualizar en la lista de usuarios para mantener consistencia
-    this._myState.users = this._myState.users.map(user =>
-      user.id === this._myState.currentUser!.id 
-        ? { ...user, friends: updatedFriends }
-        : user
-    );
-    
-    // Limpiar cualquier error previo
-    this._myState.error = null;
-    
-    console.log(`Amigo "${friendToRemove.name}" (@${friendUsername}) eliminado exitosamente`);
-    
-    // Emitir cambios y persistir
-    this._emitChange();
-    this.persist();
-    
-  } catch (error) {
-    console.error('Error al eliminar amigo:', error);
-    this._myState.error = 'Error al eliminar el amigo';
-    this._emitChange();
+    if (!friendUsername) {
+      console.error('Username del amigo no proporcionado');
+      return;
+    }
+
+    try {
+      // Obtener la lista actual de amigos
+      const existingFriends = this._myState.currentUser.friends || [];
+      
+      // Verificar si el amigo existe antes de eliminarlo
+      const friendToRemove = existingFriends.find(friend => friend.username === friendUsername);
+      
+      if (!friendToRemove) {
+        console.warn(`El amigo con username "${friendUsername}" no se encuentra en la lista`);
+        return;
+      }
+
+      // Filtrar el amigo de la lista
+      const updatedFriends = existingFriends.filter(friend => friend.username !== friendUsername);
+      
+      // Actualizar currentUser inmediatamente
+      this._myState.currentUser = {
+        ...this._myState.currentUser,
+        friends: updatedFriends
+      };
+      
+      // También actualizar en la lista de usuarios para mantener consistencia
+      this._myState.users = this._myState.users.map(user =>
+        user.id === this._myState.currentUser!.id 
+          ? { ...user, friends: updatedFriends }
+          : user
+      );
+      
+      // Limpiar cualquier error previo
+      this._myState.error = null;
+      
+      console.log(`✅ Amigo "${friendToRemove.name}" (@${friendUsername}) eliminado exitosamente`);
+      console.log(`📊 Total de amigos: ${updatedFriends.length}`);
+      
+      // Emitir cambios INMEDIATAMENTE
+      this._emitChange();
+      
+      // Persistir de forma asíncrona
+      this.persist().catch(error => {
+        console.error('Error al persistir después de eliminar amigo:', error);
+      });
+      
+    } catch (error) {
+      console.error('❌ Error al eliminar amigo:', error);
+      this._myState.error = 'Error al eliminar el amigo';
+      this._emitChange();
+    }
   }
-}
+
+  async persist(): Promise<void> {
+    try {
+      const dataToSave = {
+        currentUser: this._myState.currentUser,
+        users: this._myState.users,
+        // otros datos que necesites persistir
+      };
+      
+      localStorage.setItem('appState', JSON.stringify(dataToSave));
+      console.log('💾 Estado persistido correctamente');
+      
+    } catch (error) {
+      console.error('❌ Error al persistir estado:', error);
+      throw error;
+    }
+  }
+
+  // Método útil para debug
+  debugFriends(): void {
+    const friends = this._myState.currentUser?.friends || [];
+    console.log('🔍 Debug - Estado actual de amigos:', {
+      user: this._myState.currentUser?.name,
+      friendsCount: friends.length,
+      friends: friends.map(f => ({ name: f.name, username: f.username }))
+    });
+  }
+
 
   private _handleToggleLike(action: Action): void {
     const { postId, userId } = action.payload as { postId: string; userId: string };
@@ -319,10 +378,6 @@ private _handleRemoveFriendFromProfile(action: Action): void {
 
   isPostLikedByUser(postId: string, userId: string): boolean {
     return Array.isArray(this._myState.likesByPost[postId]) && this._myState.likesByPost[postId].includes(userId);
-  }
-
-  persist(): void {
-    localStorage.setItem('flux:state', JSON.stringify(this._myState));
   }
 
   load(): void {

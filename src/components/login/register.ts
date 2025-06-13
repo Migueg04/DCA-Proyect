@@ -1,52 +1,66 @@
 import { UserActions, NavigateActions } from "../../Flux/Actions";
+import { registerUser } from "../../services/authService";
 
-  function generateId() {
-    return crypto.randomUUID();
-  }
+function generateId() {
+  return crypto.randomUUID();
+}
 
-  function calculateAge(birthdate: string): string {
-    const today = new Date();
-    const birth = new Date(birthdate);
-    let age = today.getFullYear() - birth.getFullYear();
-    const monthDiff = today.getMonth() - birth.getMonth();
-    
-    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
-      age--;
-    }
-    
-    return age.toString();
+function calculateAge(birthdate: string): string {
+  const today = new Date();
+  const birth = new Date(birthdate);
+  let age = today.getFullYear() - birth.getFullYear();
+  const monthDiff = today.getMonth() - birth.getMonth();
+  
+  if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
+    age--;
   }
+  
+  return age.toString();
+}
 
-  function isValidPassword(password: string): boolean {
-    const minLength = 8;
-    const hasUpper = /[A-Z]/.test(password);
-    const hasLower = /[a-z]/.test(password);
-    const hasNumber = /[0-9]/.test(password);
-    const hasSymbol = /[^A-Za-z0-9]/.test(password);
-    return password.length >= minLength && hasUpper && hasLower && hasNumber && hasSymbol;
-  }
+function isValidPassword(password: string): boolean {
+  const minLength = 8;
+  const hasUpper = /[A-Z]/.test(password);
+  const hasLower = /[a-z]/.test(password);
+  const hasNumber = /[0-9]/.test(password);
+  const hasSymbol = /[^A-Za-z0-9]/.test(password);
+  return password.length >= minLength && hasUpper && hasLower && hasNumber && hasSymbol;
+}
+
 export class RegisterForm extends HTMLElement {
   constructor() {
     super();
     this.attachShadow({ mode: 'open' });
   }
 
-    connectedCallback() {
-        this.render();
-        this.shadowRoot?.querySelector('form')?.addEventListener('submit', this.handleSubmit.bind(this));
-        this.shadowRoot?.querySelector('#go-to-login')?.addEventListener('click', (e) => {
-            e.preventDefault();
-            this.dispatchEvent(new CustomEvent('change-view', {
-            detail: 'login',
-            bubbles: true,
-            composed: true
-            }));
-        });
-    }
+  connectedCallback() {
+    this.render();
+    this.shadowRoot?.querySelector('form')?.addEventListener('submit', this.handleSubmit.bind(this));
+    this.shadowRoot?.querySelector('#go-to-login')?.addEventListener('click', (e) => {
+      e.preventDefault();
+      this.dispatchEvent(new CustomEvent('change-view', {
+        detail: 'login',
+        bubbles: true,
+        composed: true
+      }));
+    });
 
-  handleSubmit(event: Event) {
+    
+    this.shadowRoot?.querySelectorAll('.toggle-password').forEach(el => {
+      el.addEventListener('click', () => {
+        const targetId = el.getAttribute('data-target');
+        const input = this.shadowRoot?.querySelector(`#${targetId}`) as HTMLInputElement;
+        if (input) {
+          input.type = input.type === 'password' ? 'text' : 'password';
+          el.textContent = input.type === 'password' ? '👁️' : '🙈';
+        }
+      });
+    });
+  }
+
+  async handleSubmit(event: Event) {
     event.preventDefault();
-    const form = event.target as HTMLFormElement;
+    const form = this.shadowRoot!.querySelector('form') as HTMLFormElement;
 
     const password = (form.querySelector('#password') as HTMLInputElement).value;
     const confirmPassword = (form.querySelector('#confirm-password') as HTMLInputElement).value;
@@ -63,31 +77,18 @@ export class RegisterForm extends HTMLElement {
 
     const birthdate = (form.querySelector('#birthdate') as HTMLInputElement).value;
     const calculatedAge = calculateAge(birthdate);
-
-    const newUser = {
-      id: generateId(),
-      email: (form.querySelector('#email') as HTMLInputElement).value,
-      name: (form.querySelector('#name') as HTMLInputElement).value,
-      username: (form.querySelector('#username') as HTMLInputElement).value,
-      password: password,
-      birthdate: birthdate,
-      bio: '',
-      age: calculatedAge,
-      friends: [],
-      profileimg: '',
-      bgimg: ''
-    };
+    const name = (form.querySelector('#name') as HTMLInputElement).value;
+    const username = (form.querySelector('#username') as HTMLInputElement).value;
+    const email = (form.querySelector('#email') as HTMLInputElement).value;
 
     try {
-      UserActions.addUser(newUser);
-      UserActions.setCurrentUser(newUser);
+      await registerUser(email, password, { name, username, bio: '', age: calculatedAge });
       NavigateActions.navigate('/');
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error during registration:', error);
-      alert('Registration failed. Please try again.');
+      alert('Registration failed. ' + error.message);
     }
   }
-
 
   render() {
     this.shadowRoot!.innerHTML = `
@@ -119,7 +120,6 @@ export class RegisterForm extends HTMLElement {
           padding: 40px;
           width: 100%;
           max-width: 400px;
-          
         }
 
         .register-title {
@@ -134,6 +134,19 @@ export class RegisterForm extends HTMLElement {
           display: flex;
           flex-direction: column;
           gap: 20px;
+        }
+
+        .password-field {
+          position: relative;
+        }
+
+        .toggle-password {
+          position: absolute;
+          right: 15px;
+          top: 50%;
+          transform: translateY(-50%);
+          cursor: pointer;
+          user-select: none;
         }
 
         input[type="text"],
@@ -236,14 +249,13 @@ export class RegisterForm extends HTMLElement {
           font-family: "Nunito", sans-serif;
         }
 
-
-@media (max-width: 480px) {
+      @media (max-width: 480px) {
           :host {
             overflow-y: auto;
             padding: 20px 0;
             background-image: url('https://i.postimg.cc/tRc6sxS4/image-5.png');
-            background-size: cover; /* Asegura que cubra todo el contenedor */
-            background-position: center; /* Centra la imagen */
+            background-size: cover;
+            background-position: center;
             background-repeat: no-repeat;
           }
           .login-container {
@@ -301,8 +313,16 @@ export class RegisterForm extends HTMLElement {
             <input id="name" type="text" placeholder="Name" required />
             <input id="username" type="text" placeholder="Username" required />
             <input id="email" type="email" placeholder="Email" required />
-            <input id="password" type="password" placeholder="Password" required />
-            <input id="confirm-password" type="password" placeholder="Confirm your Password" required />
+
+            <div class="password-field">
+              <input id="password" type="password" placeholder="Password" required />
+              <span class="toggle-password" data-target="password">👁️</span>
+            </div>
+
+            <div class="password-field">
+              <input id="confirm-password" type="password" placeholder="Confirm your Password" required />
+              <span class="toggle-password" data-target="confirm-password">👁️</span>
+            </div>
           
             <div class="birthdate-section">
                 <label class="birthdate-label" for="birthdate">Birthdate</label>

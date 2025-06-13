@@ -1,7 +1,8 @@
-// src/components/friends-list.ts
 import { UserActions } from '../../Flux/Actions';
 import { Friend } from '../../utils/types/types';
 import { store } from '../../Flux/Store';
+import { getAllUsers } from '../../services/Userservice';
+
 
 class FriendsList extends HTMLElement {
   friends: Friend[] = [];
@@ -15,25 +16,28 @@ class FriendsList extends HTMLElement {
   }
 
   connectedCallback() {
-    // Suscribirse a los cambios del store
+    // Suscribirse al store
     this.unsubscribe = store.subscribe((state) => {
-      // Actualizar la lista de amigos del usuario actual
       const userFriends = state.currentUser?.friends || [];
       this.currentUserFriends = new Set(userFriends.map(f => f.username));
-      // Re-renderizar para actualizar el estado de los botones
       this.render();
     });
 
-    // Obtener el estado inicial
+    // Obtener estado inicial
     const initialState = store.getState();
     const initialUserFriends = initialState.currentUser?.friends || [];
     this.currentUserFriends = new Set(initialUserFriends.map(f => f.username));
+
+    // Obtener todos los usuarios y mostrarlos
+    getAllUsers().then((users: Friend[]) => {
+      const currentUser = store.getState().currentUser;
+      const filtered = users.filter((u: Friend) => u.username !== currentUser?.username);
+      this.data = filtered;
+    });
   }
 
   disconnectedCallback() {
-    if (this.unsubscribe) {
-      this.unsubscribe();
-    }
+    if (this.unsubscribe) this.unsubscribe();
   }
 
   set data(friends: Friend[]) {
@@ -54,16 +58,13 @@ class FriendsList extends HTMLElement {
 
         if (!friend || this.currentUserFriends.has(friend.username)) return;
 
-        // Actualizar inmediatamente el estado visual del botón
         target.textContent = '✓';
         target.disabled = true;
         target.style.background = '#28a745';
         target.style.cursor = 'not-allowed';
 
-        // Dispatch la acción para agregar el amigo
         UserActions.addFriendToProfile(friend);
 
-        // Mostrar mensaje temporal de confirmación
         this.showTemporaryMessage(`${friend.name} has been added to your friends!`);
       });
     });
@@ -78,25 +79,28 @@ class FriendsList extends HTMLElement {
   }
 
   private loadMoreFriends() {
-    const currentLength = this.currentFriends.length;
-    const nextBatch = this.friends.slice(currentLength, currentLength + this.friendsPerPage);
-    
-    if (nextBatch.length > 0) {
-      this.currentFriends = [...this.currentFriends, ...nextBatch];
-      this.render();
+    const currentStartIndex = this.friends.findIndex(f => f === this.currentFriends[0]);
+    let nextStartIndex = currentStartIndex + this.friendsPerPage;
+
+    // Reiniciar si alcanzamos el final
+    if (nextStartIndex >= this.friends.length) {
+      nextStartIndex = 0;
     }
 
-    // Ocultar el botón si no hay más amigos para mostrar
-    if (this.currentFriends.length >= this.friends.length) {
-      const showMoreBtn = this.querySelector('.show-more') as HTMLButtonElement;
-      if (showMoreBtn) {
-        showMoreBtn.style.display = 'none';
-      }
+    const nextBatch = this.friends.slice(nextStartIndex, nextStartIndex + this.friendsPerPage);
+
+    // Si quedan menos de 3 al final, y queremos completar el grupo de 3 desde el principio:
+    if (nextBatch.length < this.friendsPerPage) {
+      const remaining = this.friends.slice(0, this.friendsPerPage - nextBatch.length);
+      this.currentFriends = [...nextBatch, ...remaining];
+    } else {
+      this.currentFriends = nextBatch;
     }
+
+    this.render();
   }
 
   private showTemporaryMessage(message: string) {
-    // Crear elemento de mensaje temporal
     const messageDiv = document.createElement('div');
     messageDiv.textContent = message;
     messageDiv.style.cssText = `
@@ -114,44 +118,25 @@ class FriendsList extends HTMLElement {
       animation: slideInRight 0.3s ease-out;
     `;
     
-    // Agregar estilos de animación
     const styleSheet = document.createElement('style');
     styleSheet.textContent = `
       @keyframes slideInRight {
-        from {
-          transform: translateX(100%);
-          opacity: 0;
-        }
-        to {
-          transform: translateX(0);
-          opacity: 1;
-        }
+        from { transform: translateX(100%); opacity: 0; }
+        to { transform: translateX(0); opacity: 1; }
       }
       @keyframes slideOutRight {
-        from {
-          transform: translateX(0);
-          opacity: 1;
-        }
-        to {
-          transform: translateX(100%);
-          opacity: 0;
-        }
+        from { transform: translateX(0); opacity: 1; }
+        to { transform: translateX(100%); opacity: 0; }
       }
     `;
     document.head.appendChild(styleSheet);
-    
     document.body.appendChild(messageDiv);
-    
-    // Remover después de 3 segundos con animación
+
     setTimeout(() => {
       messageDiv.style.animation = 'slideOutRight 0.3s ease-in forwards';
       setTimeout(() => {
-        if (messageDiv.parentNode) {
-          messageDiv.parentNode.removeChild(messageDiv);
-        }
-        if (styleSheet.parentNode) {
-          styleSheet.parentNode.removeChild(styleSheet);
-        }
+        messageDiv.remove();
+        styleSheet.remove();
       }, 300);
     }, 3000);
   }
@@ -162,7 +147,7 @@ class FriendsList extends HTMLElement {
 
   render() {
     const hasMoreFriends = this.currentFriends.length < this.friends.length;
-    
+
     this.innerHTML = `
     <style>
       .friends h3,
@@ -288,12 +273,12 @@ class FriendsList extends HTMLElement {
         list-style: none;
       }
     </style>
-      <section class="friends">
-        <h3>Next-level gamers to follow</h3>
-        <ul>
-          ${this.currentFriends.map((friend, index) => {
-            const isAlreadyFriend = this.isAlreadyFriend(friend.username);
-            return `
+    <section class="friends">
+      <h3>Next-level gamers to follow</h3>
+      <ul>
+        ${this.currentFriends.map((friend, index) => {
+          const isAlreadyFriend = this.isAlreadyFriend(friend.username);
+          return `
             <li class="friend">
               <img src="${friend.avatar}" alt="${friend.name}" />
               <div>
@@ -310,10 +295,11 @@ class FriendsList extends HTMLElement {
                 ${isAlreadyFriend ? '✓' : '+'}
               </button>
             </li>
-          `;}).join('')}
-        </ul>
-        <button type="button" class="show-more">Show more</button>
-      </section>
+          `;
+        }).join('')}
+      </ul>
+      <button type="button" class="show-more">Show more</button>
+    </section>
     `;
 
     this.attachEventListeners();

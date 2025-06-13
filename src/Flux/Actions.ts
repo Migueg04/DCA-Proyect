@@ -1,4 +1,6 @@
 import { Friend } from '../utils/types/types';
+
+import { getUserById } from '../services/Userservice';
 import { AppDispatcher } from './Dispatcher';
 
 export const NavigateActionsType = {

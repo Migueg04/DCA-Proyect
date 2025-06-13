@@ -1,3 +1,9 @@
+import "../profilePage/Editprofile";
+import { NavigateActions, UserActions } from "../../Flux/Actions";
+import { store } from "../../Flux/Store";
+import { getUserById } from "../../services/Userservice";
+
+
 export enum ProfileCardAttribute {
   bgimg = 'bgimg',
   profileimg = 'profileimg',
@@ -16,6 +22,7 @@ class ProfileCard extends HTMLElement {
   bio?: string;
   age?: string;
   friends?: string;
+  isUserInfoFetched: boolean = false;
 
   static get observedAttributes() {
     return Object.values(ProfileCardAttribute);
@@ -33,13 +40,50 @@ class ProfileCard extends HTMLElement {
     }
   }
 
-  connectedCallback() {
+connectedCallback() {
+    store.subscribe(this.handleStoreChange.bind(this));
+    this.handleStoreChange();
+    this.getUserInfo();
+    console.log(" Store change detected");
     this.render();
+
+}
+disconnectedCallback() {
+store.unsubscribe(this.handleStoreChange.bind(this));
+}
+
+async getUserInfo() {
+
+    if (this.isUserInfoFetched) return;
+    const currentUser = store.getState().currentUser;
+    if (currentUser) {
+        const userInfo = await getUserById(currentUser.id);
+        if (userInfo) {
+            if (JSON.stringify(currentUser) !== JSON.stringify(userInfo)) {
+                UserActions.setCurrentUser(userInfo);
+            }
+        }
+    }
+}
+handleStoreChange() {
+  const state = store.getState();
+  const user = state.currentUser;
+
+  if (user) {
+    this.setAttribute("bgimg", user.bgimg || " ");
+    this.setAttribute("profileimg", user.profileimg || " ");
+    this.setAttribute("name", user.name || "");
+    this.setAttribute("username", user.username || "");
+    this.setAttribute("bio", user.bio || "");
+    this.setAttribute("age", user.age || "");
+    this.setAttribute("friends", String(user.friends || ""));
   }
+}
+
+
 
   render() {
     if (!this.shadowRoot) return;
-    console.log(this.friends);
 
     this.shadowRoot.innerHTML = `
         <style>
@@ -203,7 +247,7 @@ class ProfileCard extends HTMLElement {
                 <div class="profile-img">
                     <img src="${this.profileimg}" alt="Profile Picture" />
                 </div>
-                <button class="edit-button">⚙Edit profile</button>
+                <button class="edit-button" id="editBtn">⚙Edit profile</button>
             </div>
             <div class="body">
                 <div class="name">${this.name ?? ''}</div>
@@ -217,7 +261,11 @@ class ProfileCard extends HTMLElement {
             </div>
         </div>
     `;
-  }
+this.shadowRoot?.querySelector("#editBtn")?.addEventListener("click", () => {
+NavigateActions.navigate('/Editprofile');
+});
+
+}
 }
 
 export default ProfileCard;

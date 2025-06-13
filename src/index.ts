@@ -4,6 +4,7 @@ import Comments from "./components/comments/comments";
 import Button from "./components/dropButton/dropButton";
 import Section from "./components/comments/sectionComments";
 import './components/trendingPanel/trendingPanel';
+
 import './components/Sidebar';
 import './components/searchbar';
 import './components/mainFeed';
@@ -23,10 +24,13 @@ import FriendsInProfile from "./components/friends/friendsInProfile";
 import FriendProfile from "./components/friends/friendProfile";
 
 
-customElements.define("comments-component", Comments);
+
 customElements.define('friends-list', FriendsList);
 customElements.define('news-list', NewsList);
 customElements.define('trending-panel', TrendingPanel);
+
+
+customElements.define("comments-component", Comments);
 customElements.define("button-component", Button);
 customElements.define("section-component", Section);
 customElements.define('login-form', LoginForm);
