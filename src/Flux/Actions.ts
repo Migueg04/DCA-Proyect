@@ -1,4 +1,5 @@
 
+import { getUserById } from '../services/Userservice';
 import { AppDispatcher } from './Dispatcher';
 
 export const NavigateActionsType = {
@@ -75,6 +76,7 @@ export const UserActions = {
       payload: { email, password }
     });
   },
+
 
   logoutUser: () => {
     AppDispatcher.dispatch({

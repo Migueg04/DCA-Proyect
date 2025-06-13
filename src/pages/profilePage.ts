@@ -16,7 +16,7 @@ class ProfilePage extends HTMLElement {
     console.log(state);
   }
 
-  render() {
+  render( ) {
     if (!this.shadowRoot) return;
 
     const state = store.getState();

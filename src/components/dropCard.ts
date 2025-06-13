@@ -1,6 +1,7 @@
 import { store } from "../Flux/Store";
 import { CommentActions, LikeActions } from "../Flux/Actions";
 import { deletePost, editPost } from "../services/postService";
+import { guardarPost } from "../services/postService"; 
 
 export interface Drop {
   id: string;
@@ -140,6 +141,18 @@ export function createDropCard(drop: Drop): HTMLElement {
         .comments-container {
           width: 95%;
         }
+  .save-button {
+  background: #ec4899;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: background-color 0.2s;
+}
+.save-button:hover {
+  background-color: #db2777;
+}
       }
     </style>
 
@@ -157,6 +170,7 @@ export function createDropCard(drop: Drop): HTMLElement {
         <div class="drop-actions">
           <button class="comment-button" type="button">💬 Comment</button>
           <button class="like-button" type="button">❤️ <span class="like-count">0</span></button>
+          <button class="save-button" type="button">🔖 Guardar</button>
         </div>
       </div>
     </div>
@@ -180,7 +194,17 @@ export function createDropCard(drop: Drop): HTMLElement {
       setTimeout(() => likeButton.classList.remove("bounce"), 400);
     }
   });
-
+const saveButton = card.querySelector(".save-button") as HTMLButtonElement;
+saveButton.addEventListener("click", async () => {
+  if (!currentUser) return alert("Debes iniciar sesión para guardar posts.");
+  try {
+    await guardarPost(currentUser.id);
+    saveButton.textContent = "Guardado";
+    saveButton.disabled = true;
+  } catch (err: any) {
+    alert("Error al guardar el post: " + err.message);
+  }
+});
   store.subscribe(() => {
     const container = card.querySelector(`[data-post-id="${uniqueId}"]`);
     if (container)

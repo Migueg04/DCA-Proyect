@@ -72,3 +72,13 @@ export async function editPost(
 ): Promise<void> {
   await updateDoc(doc(db, "posts", postId), updates as any);
 }
+
+export async function guardarPost(post: any): Promise<void> {
+  try {
+    await addDoc(collection(db, "posts_guardados"), post);
+    console.log("Post guardado exitosamente.");
+  } catch (error) {
+    console.error("Error al guardar el post:", error);
+  }
+};
+export default guardarPost;

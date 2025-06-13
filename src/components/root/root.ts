@@ -44,6 +44,12 @@ class Root extends HTMLElement {
       case '/profile':
         content.innerHTML = `<profile-page></profile-page>`;
         break;
+      case '/Editprofile':
+        content.innerHTML = `<edit-profile></edit-profile>`;
+        break;
+      case '/bookmarks':
+        content.innerHTML = `<posts-guardados></posts-guardados>`;
+        break;
       default:
         content.innerHTML = `<h1>404 - Página no encontrada</h1>`;
         break;

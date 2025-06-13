@@ -2,6 +2,7 @@
 import { NavigateActionsType, UserActionsType, CommentActionsType, User, Comment } from './Actions';
 import { AppDispatcher, Action } from './Dispatcher';
 
+
 export const LikeActionsType = {
   TOGGLE_LIKE: 'TOGGLE_LIKE'
 };
@@ -90,6 +91,7 @@ class Store {
       case LikeActionsType.TOGGLE_LIKE:
         this._handleToggleLike(action);
         break;
+
     }
   }
 
@@ -174,7 +176,6 @@ class Store {
     this._emitChange();
     this.persist();
   }
-
   private _handleGetUserByEmail(action: Action): void {
     const { email } = action.payload as { email: string };
     this._myState.isLoading = true;
