@@ -16,7 +16,7 @@ class ProfilePage extends HTMLElement {
     console.log(state);
   }
 
-  render( ) {
+  render() {
     if (!this.shadowRoot) return;
 
     const state = store.getState();
@@ -31,12 +31,12 @@ class ProfilePage extends HTMLElement {
     const username = currentUser?.username || "username";
     const bio = currentUser?.bio || "Welcome to my profile! 🎮";
     const age = currentUser?.age || "N/A";
-    const friends = currentUser?.friends || "3";
+    const friends = currentUser?.friends.length || "3";
 
     this.shadowRoot.innerHTML = `
       <style>
         .container {
-          margin-right: 100px; 
+          margin-right: 100px; /* deja espacio para el right-bar */
           width: calc(100% - 100px);
           height: 100%;
           display: flex;

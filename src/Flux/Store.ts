@@ -1,7 +1,6 @@
-
+import { Friend } from '../utils/types/types';
 import { NavigateActionsType, UserActionsType, CommentActionsType, User, Comment } from './Actions';
 import { AppDispatcher, Action } from './Dispatcher';
-
 
 export const LikeActionsType = {
   TOGGLE_LIKE: 'TOGGLE_LIKE'
@@ -45,9 +44,15 @@ class Store {
     return this._myState;
   }
 
-  subscribe(listener: Listener): void {
+  // Método subscribe actualizado que devuelve función de cleanup
+  subscribe(listener: Listener): () => void {
     this._listeners.push(listener);
     listener(this.getState());
+    
+    // Devolver función de cleanup
+    return () => {
+      this.unsubscribe(listener);
+    };
   }
 
   unsubscribe(listener: Listener): void {
@@ -91,7 +96,12 @@ class Store {
       case LikeActionsType.TOGGLE_LIKE:
         this._handleToggleLike(action);
         break;
-
+      case UserActionsType.ADD_FRIEND_TO_PROFILE:
+        this._handleAddFriendToProfile(action);
+        break;
+      case UserActionsType.REMOVE_FRIEND_FROM_PROFILE:  // <- NUEVO CASE
+        this._handleRemoveFriendFromProfile(action);
+        break;
     }
   }
 
@@ -176,6 +186,7 @@ class Store {
     this._emitChange();
     this.persist();
   }
+
   private _handleGetUserByEmail(action: Action): void {
     const { email } = action.payload as { email: string };
     this._myState.isLoading = true;
@@ -205,6 +216,151 @@ class Store {
     this.persist();
   }
 
+   private async _handleAddFriendToProfile(action: Action): Promise<void> {
+    const { friend } = action.payload as { friend: Friend };
+    
+    if (!this._myState.currentUser) {
+      console.error('No hay usuario autenticado para añadir amigo');
+      return;
+    }
+
+    try {
+      // Verificar si el amigo ya existe para evitar duplicados
+      const existingFriends = this._myState.currentUser.friends || [];
+      const friendExists = existingFriends.some(f => f.username === friend.username);
+      
+      if (friendExists) {
+        console.warn(`El amigo ${friend.name} ya está en la lista`);
+        return;
+      }
+
+      // Crear la nueva lista de amigos
+      const updatedFriends = [...existingFriends, friend];
+      
+      // Actualizar currentUser inmediatamente
+      this._myState.currentUser = {
+        ...this._myState.currentUser,
+        friends: updatedFriends
+      };
+      
+      // También actualizar en la lista de usuarios para mantener consistencia
+      this._myState.users = this._myState.users.map(user =>
+        user.id === this._myState.currentUser!.id 
+          ? { ...user, friends: updatedFriends }
+          : user
+      );
+      
+      // Limpiar errores
+      this._myState.error = null;
+      
+      console.log(`✅ Amigo "${friend.name}" (@${friend.username}) añadido exitosamente`);
+      console.log(`📊 Total de amigos: ${updatedFriends.length}`);
+      
+      // Emitir cambios INMEDIATAMENTE
+      this._emitChange();
+      
+      // Persistir de forma asíncrona (sin bloquear)
+      this.persist().catch(error => {
+        console.error('Error al persistir después de añadir amigo:', error);
+      });
+      
+    } catch (error) {
+      console.error('❌ Error al añadir amigo:', error);
+      this._myState.error = 'Error al añadir el amigo';
+      this._emitChange();
+    }
+  }
+
+  private async _handleRemoveFriendFromProfile(action: Action): Promise<void> {
+    const { friendUsername } = action.payload as { friendUsername: string };
+    
+    if (!this._myState.currentUser) {
+      console.error('No hay usuario autenticado para eliminar amigo');
+      return;
+    }
+
+    if (!friendUsername) {
+      console.error('Username del amigo no proporcionado');
+      return;
+    }
+
+    try {
+      // Obtener la lista actual de amigos
+      const existingFriends = this._myState.currentUser.friends || [];
+      
+      // Verificar si el amigo existe antes de eliminarlo
+      const friendToRemove = existingFriends.find(friend => friend.username === friendUsername);
+      
+      if (!friendToRemove) {
+        console.warn(`El amigo con username "${friendUsername}" no se encuentra en la lista`);
+        return;
+      }
+
+      // Filtrar el amigo de la lista
+      const updatedFriends = existingFriends.filter(friend => friend.username !== friendUsername);
+      
+      // Actualizar currentUser inmediatamente
+      this._myState.currentUser = {
+        ...this._myState.currentUser,
+        friends: updatedFriends
+      };
+      
+      // También actualizar en la lista de usuarios para mantener consistencia
+      this._myState.users = this._myState.users.map(user =>
+        user.id === this._myState.currentUser!.id 
+          ? { ...user, friends: updatedFriends }
+          : user
+      );
+      
+      // Limpiar cualquier error previo
+      this._myState.error = null;
+      
+      console.log(`✅ Amigo "${friendToRemove.name}" (@${friendUsername}) eliminado exitosamente`);
+      console.log(`📊 Total de amigos: ${updatedFriends.length}`);
+      
+      // Emitir cambios INMEDIATAMENTE
+      this._emitChange();
+      
+      // Persistir de forma asíncrona
+      this.persist().catch(error => {
+        console.error('Error al persistir después de eliminar amigo:', error);
+      });
+      
+    } catch (error) {
+      console.error('❌ Error al eliminar amigo:', error);
+      this._myState.error = 'Error al eliminar el amigo';
+      this._emitChange();
+    }
+  }
+
+  async persist(): Promise<void> {
+    try {
+      const dataToSave = {
+        currentUser: this._myState.currentUser,
+        users: this._myState.users,
+        // otros datos que necesites persistir
+      };
+      
+      localStorage.setItem('appState', JSON.stringify(dataToSave));
+      console.log('💾 Estado persistido correctamente');
+      
+    } catch (error) {
+      console.error('❌ Error al persistir estado:', error);
+      throw error;
+    }
+  }
+
+  // Método útil para debug
+  debugFriends(): void {
+    const friends = this._myState.currentUser?.friends || [];
+    console.log('🔍 Debug - Estado actual de amigos:', {
+      user: this._myState.currentUser?.name,
+      friendsCount: friends.length,
+      friends: friends.map(f => ({ name: f.name, username: f.username }))
+    });
+  }
+
+
   private _handleToggleLike(action: Action): void {
     const { postId, userId } = action.payload as { postId: string; userId: string };
     let likes: string[] = Array.isArray(this._myState.likesByPost[postId]) ? this._myState.likesByPost[postId] : [];
@@ -222,10 +378,6 @@ class Store {
 
   isPostLikedByUser(postId: string, userId: string): boolean {
     return Array.isArray(this._myState.likesByPost[postId]) && this._myState.likesByPost[postId].includes(userId);
-  }
-
-  persist(): void {
-    localStorage.setItem('flux:state', JSON.stringify(this._myState));
   }
 
   load(): void {

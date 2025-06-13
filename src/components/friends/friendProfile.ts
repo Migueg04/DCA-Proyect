@@ -1,9 +1,3 @@
-import "../profilePage/Editprofile";
-import { NavigateActions, UserActions } from "../../Flux/Actions";
-import { store } from "../../Flux/Store";
-import { getUserById } from "../../services/Userservice";
-
-
 export enum ProfileCardAttribute {
   bgimg = 'bgimg',
   profileimg = 'profileimg',
@@ -14,7 +8,7 @@ export enum ProfileCardAttribute {
   friends = 'friends',
 }
 
-class ProfileCard extends HTMLElement {
+class FriendProfile extends HTMLElement{
   bgimg?: string;
   profileimg?: string;
   name?: string;
@@ -22,7 +16,6 @@ class ProfileCard extends HTMLElement {
   bio?: string;
   age?: string;
   friends?: string;
-  isUserInfoFetched: boolean = false;
 
   static get observedAttributes() {
     return Object.values(ProfileCardAttribute);
@@ -40,47 +33,9 @@ class ProfileCard extends HTMLElement {
     }
   }
 
-connectedCallback() {
-    store.subscribe(this.handleStoreChange.bind(this));
-    this.handleStoreChange();
-    this.getUserInfo();
-    console.log(" Store change detected");
+  connectedCallback() {
     this.render();
-
-}
-disconnectedCallback() {
-store.unsubscribe(this.handleStoreChange.bind(this));
-}
-
-async getUserInfo() {
-
-    if (this.isUserInfoFetched) return;
-    const currentUser = store.getState().currentUser;
-    if (currentUser) {
-        const userInfo = await getUserById(currentUser.id);
-        if (userInfo) {
-            if (JSON.stringify(currentUser) !== JSON.stringify(userInfo)) {
-                UserActions.setCurrentUser(userInfo);
-            }
-        }
-    }
-}
-handleStoreChange() {
-  const state = store.getState();
-  const user = state.currentUser;
-
-  if (user) {
-    this.setAttribute("bgimg", user.bgimg || " ");
-    this.setAttribute("profileimg", user.profileimg || " ");
-    this.setAttribute("name", user.name || "");
-    this.setAttribute("username", user.username || "");
-    this.setAttribute("bio", user.bio || "");
-    this.setAttribute("age", user.age || "");
-    this.setAttribute("friends", String(user.friends || ""));
   }
-}
-
-
 
   render() {
     if (!this.shadowRoot) return;
@@ -247,25 +202,20 @@ handleStoreChange() {
                 <div class="profile-img">
                     <img src="${this.profileimg}" alt="Profile Picture" />
                 </div>
-                <button class="edit-button" id="editBtn">⚙Edit profile</button>
+                <button class="edit-button">⚙Edit profile</button>
             </div>
             <div class="body">
                 <div class="name">${this.name ?? ''}</div>
                 <div class="username">@${this.username ?? ''}</div>
-                <div class="age">${this.age ? `${this.age} years old` : ''}</div>
                 <div class="bio">${this.bio ?? ''}</div>
                 <div class="footer">
-                    <span>Friends: ${this.friends}</span>
+                    <span>Friends: ${this.friends?.length}</span>
                     <log-out-btn></log-out-btn>
                 </div>
             </div>
         </div>
     `;
-this.shadowRoot?.querySelector("#editBtn")?.addEventListener("click", () => {
-NavigateActions.navigate('/Editprofile');
-});
-
-}
+  }
 }
 
-export default ProfileCard;
+export default FriendProfile
