@@ -139,28 +139,44 @@ class Sidebar extends HTMLElement {
       </style>
       <div class="icons">
         <div class="top-icons">
-          <a class="icon-link" navigate-to="/">${this.logo ? `<img src="${this.logo}" alt="Logo Icon" class="icon" />` : '🎮'}</a>
-          <a class="icon-link" navigate-to="/">${this.home ? `<img src="${this.home}" alt="Home Icon" class="icon" />` : '🏠'}</a>
-          <a class="icon-link" id="openDropModal">${this.add ? `<img src="${this.add}" alt="Add Icon" class="icon" />` : '➕'}</a>
-          <a class="icon-link" navigate-to="/bookmarks">${this.bookmark ? `<img src="${this.bookmark}" alt="Bookmark Icon" class="icon" />` : '🔖'}</a>
+          <!-- Logo: vuelve al inicio -->
+            ${this.logo ? `<img src="${this.logo}" alt="Logo" class="icon"/>` : '🎮'}
+          </a>
+
+          <!-- Home: ruta principal -->
+          <a class="icon-link" navigate-to="/" title="Home">
+            ${this.home ? `<img src="${this.home}" alt="Home" class="icon"/>` : '🏠'}
+          </a>
+
+          <!-- Agregar contenido -->
+          <a class="icon-link" id="openDropModal" title="Agregar">
+            ${this.add ? `<img src="${this.add}" alt="Add" class="icon"/>` : '➕'}
+          </a>
+
+          <!-- Guardados: pantalla de Saved Posts -->
+          <a class="icon-link" navigate-to="/bookmarks" title="Guardados">
+            ${this.bookmark ? `<img src="${this.bookmark}" alt="Bookmark" class="icon"/>` : '🔖'}
+          </a>
         </div>
       </div>
-      <div class="profile" navigate-to="/profile">
+
+      <!-- Perfil: página de usuario -->
+      <div class="profile" navigate-to="/profile" title="Perfil">
         <img src="${this.profileimg || 'https://www.svgrepo.com/show/384674/account-avatar-profile-user-11.svg'}" alt="Profile" />
       </div>
     `;
+
 
     this.shadowRoot.querySelectorAll('[navigate-to]').forEach(element => {
       element.addEventListener('click', (e) => {
         e.preventDefault();
         const path = element.getAttribute('navigate-to');
-        if (path) {
-          Navigate(path);
-        }
+        if (path) Navigate(path);
       });
     });
 
-    const openDropModalBtn = this.shadowRoot?.querySelector('#openDropModal');
+
+    const openDropModalBtn = this.shadowRoot.querySelector('#openDropModal');
     openDropModalBtn?.addEventListener('click', (e) => {
       e.preventDefault();
       const modal = document.createElement('create-drop-modal');
@@ -168,5 +184,6 @@ class Sidebar extends HTMLElement {
     });
   }
 }
+
 customElements.define('side-bar', Sidebar);
 export default Sidebar;

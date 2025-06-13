@@ -117,7 +117,7 @@ class FriendsList extends HTMLElement {
       box-shadow: 0 4px 12px rgba(0,0,0,0.15);
       animation: slideInRight 0.3s ease-out;
     `;
-    
+
     const styleSheet = document.createElement('style');
     styleSheet.textContent = `
       @keyframes slideInRight {
@@ -285,10 +285,10 @@ class FriendsList extends HTMLElement {
                 <strong>${friend.name}</strong>
                 <span>@${friend.username}</span>
               </div>
-              <button 
-                type="button" 
-                class="plus-btn ${isAlreadyFriend ? 'already-friend' : ''}" 
-                data-friend-index="${index}" 
+              <button
+                type="button"
+                class="plus-btn ${isAlreadyFriend ? 'already-friend' : ''}"
+                data-friend-index="${index}"
                 ${isAlreadyFriend ? 'disabled' : ''}
                 title="${isAlreadyFriend ? 'Already in your friends list' : `Add ${friend.name} to friends`}"
               >

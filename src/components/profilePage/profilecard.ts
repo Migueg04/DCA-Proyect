@@ -70,7 +70,7 @@ handleStoreChange() {
   const user = state.currentUser;
 
   if (user) {
-    this.setAttribute("bgimg", user.bgimg || " ");
+    this.setAttribute("bgimg", user.bgimg || "https://media.es.wired.com/photos/6442f341a566376ee967ba24/16:9/w_2560%2Cc_limit/GettyImages-1424828162.jpg");
     this.setAttribute("profileimg", user.profileimg || " ");
     this.setAttribute("name", user.name || "");
     this.setAttribute("username", user.username || "");

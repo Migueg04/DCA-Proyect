@@ -22,6 +22,7 @@ import NewsList from "./components/trendingPanel/newsList";
 import TrendingPanel from "./components/trendingPanel/trendingPanel";
 import FriendsInProfile from "./components/friends/friendsInProfile";
 import FriendProfile from "./components/friends/friendProfile";
+import SavedPage from "./pages/Savedpage";
 
 
 
@@ -47,4 +48,5 @@ if (!customElements.get('create-drop-modal')) {
 }
 customElements.define('friends-inprofile', FriendsInProfile)
 customElements.define('friend-profile', FriendProfile)
+customElements.define("saved-page", SavedPage);
 

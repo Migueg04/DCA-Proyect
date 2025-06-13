@@ -1,7 +1,16 @@
+// @ts-nocheck
+
+// src/components/dropCard.ts
+
 import { store } from "../Flux/Store";
 import { CommentActions, LikeActions } from "../Flux/Actions";
-import { deletePost, editPost } from "../services/postService";
-import { guardarPost } from "../services/postService"; 
+import {
+  deletePost,
+  editPost,
+  fetchSavedPosts,
+  SavedPost,
+  guardarPost,
+} from "../services/postService";
 
 export interface Drop {
   id: string;
@@ -20,13 +29,16 @@ export function createDropCard(drop: Drop): HTMLElement {
   const uniqueId = drop.id;
   const currentUser = store.getCurrentUser() as any;
 
-  const profileImage = drop.profileImage ||
+  // Si no tienes perfil, usa tu avatar por defecto
+  const profileImage =
+    drop.profileImage ||
     currentUser?.profileimg ||
-    "https://i.pinimg.com/736x/e0/5a/19/e05a1996300035d853b03f8af6ce0c4a.jpg";
+    "/default-avatar.png"; // ajústalo si tu carpeta public está en otra ruta
   const verifiedSrc =
     drop.verified || "https://cdn-icons-png.flaticon.com/512/5253/5253968.png";
   const imageSrc = drop.image || "";
 
+  // Maquetado original sin tocar
   card.innerHTML = `
     <style>
       .drop-card-wrapper {
@@ -45,8 +57,8 @@ export function createDropCard(drop: Drop): HTMLElement {
         border-radius: 12px;
         box-shadow: 0 0 10px rgba(255,255,255,0.05);
         gap: 1rem;
-        width: 85%;               
-        max-width: 800px;        
+        width: 85%;
+        max-width: 800px;
         align-items: flex-start;
       }
       .drop-image {
@@ -91,7 +103,10 @@ export function createDropCard(drop: Drop): HTMLElement {
         gap: 0.5rem;
         margin-top: auto;
       }
-      .comment-button, .like-button, .edit-button, .delete-button {
+      .comment-button,
+      .like-button,
+      .edit-button,
+      .delete-button {
         background: pink;
         color: black;
         border: none;
@@ -113,7 +128,6 @@ export function createDropCard(drop: Drop): HTMLElement {
         100% { transform: scale(1); }
       }
 
-      
       .comments-container {
         width: 85%;
         max-width: 800px;
@@ -141,18 +155,18 @@ export function createDropCard(drop: Drop): HTMLElement {
         .comments-container {
           width: 95%;
         }
-  .save-button {
-  background: #ec4899;
-  color: white;
-  border: none;
-  padding: 0.5rem 1rem;
-  cursor: pointer;
-  border-radius: 8px;
-  transition: background-color 0.2s;
-}
-.save-button:hover {
-  background-color: #db2777;
-}
+        .save-button {
+          background: #ec4899;
+          color: white;
+          border: none;
+          padding: 0.5rem 1rem;
+          cursor: pointer;
+          border-radius: 8px;
+          transition: background-color 0.2s;
+        }
+        .save-button:hover {
+          background-color: #db2777;
+        }
       }
     </style>
 
@@ -180,38 +194,58 @@ export function createDropCard(drop: Drop): HTMLElement {
     </div>
   `;
 
-  
+  // Referencias a botones
   const commentButton = card.querySelector(".comment-button") as HTMLButtonElement;
   const likeButton = card.querySelector(".like-button") as HTMLButtonElement;
   const likeCount = card.querySelector(".like-count") as HTMLElement;
+  const saveButton = card.querySelector(".save-button") as HTMLButtonElement;
+
+  // 1) Mostrar/ocultar comentarios
   commentButton.addEventListener("click", () =>
     CommentActions.toggleComments(uniqueId)
   );
+
+  // 2) Likes
   likeButton.addEventListener("click", () => {
-    if (currentUser) {
-      LikeActions.toggleLike(uniqueId, currentUser.id);
-      likeButton.classList.add("bounce");
-      setTimeout(() => likeButton.classList.remove("bounce"), 400);
+    if (!currentUser) return;
+    LikeActions.toggleLike(uniqueId, currentUser.id);
+    likeButton.classList.add("bounce");
+    setTimeout(() => likeButton.classList.remove("bounce"), 400);
+  });
+
+  // 3) Guardar: estado inicial según Firestore
+  if (currentUser) {
+    fetchSavedPosts(currentUser.id)
+      .then((saved: SavedPost[]) => {
+        if (saved.some((p) => p.id === uniqueId)) {
+          saveButton.textContent = "✅ Guardado";
+          saveButton.disabled = true;
+        }
+      })
+      .catch((e) => console.error("Error al cargar guardados:", e));
+  }
+
+  // 4) Botón Guardar al vuelo
+  saveButton.addEventListener("click", async () => {
+    if (!currentUser) {
+      alert("Debes iniciar sesión para guardar posts.");
+      return;
+    }
+    try {
+      await guardarPost(drop, currentUser.id);
+      saveButton.textContent = "✅ Guardado";
+      saveButton.disabled = true;
+    } catch (err: any) {
+      alert("Error al guardar el post: " + err.message);
     }
   });
-const saveButton = card.querySelector(".save-button") as HTMLButtonElement;
-saveButton.addEventListener("click", async () => {
-  if (!currentUser) return alert("Debes iniciar sesión para guardar posts.");
-  try {
-    await guardarPost(currentUser.id);
-    saveButton.textContent = "Guardado";
-    saveButton.disabled = true;
-  } catch (err: any) {
-    alert("Error al guardar el post: " + err.message);
-  }
-});
+
+  // 5) Suscripción al Store para actualizar estado de comentarios y likes en tiempo real
   store.subscribe(() => {
     const container = card.querySelector(`[data-post-id="${uniqueId}"]`);
-    if (container)
-      container.classList.toggle(
-        "show",
-        store.areCommentsVisible(uniqueId)
-      );
+    if (container) {
+      container.classList.toggle("show", store.areCommentsVisible(uniqueId));
+    }
     likeCount.textContent = store.getLikes(uniqueId).toString();
     if (
       currentUser &&
@@ -223,6 +257,7 @@ saveButton.addEventListener("click", async () => {
     }
   });
 
+  // 6) Si es tu propio drop, añade Edit / Delete
   if (currentUser && currentUser.id === drop.userId) {
     const actionsDiv = card.querySelector(".drop-actions") as HTMLElement;
     const editBtn = document.createElement("button");

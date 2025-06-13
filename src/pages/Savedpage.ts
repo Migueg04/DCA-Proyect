@@ -1,26 +1,50 @@
-import { db } from "../firebase";
-import { collection, getDocs } from "firebase/firestore";
+// @ts-nocheck
 
-export async function mostrarPostsGuardados(containerId: string) {
-  const contenedor = document.getElementById(containerId);
-  if (!contenedor) return;
+import { auth } from "../firebase";
+import { fetchSavedPosts } from "../services/postService";
+import { crearCardPost } from "../components/Cardpost";
 
-  const snapshot = await getDocs(collection(db, "posts_guardados"));
+class SavedPage extends HTMLElement {
+  async connectedCallback() {
+    this.innerHTML = `
+      <section class="saved-page">
+        <h1>Posts Guardados</h1>
+        <div id="saved-container"></div>
+      </section>`;
 
-  snapshot.forEach((doc) => {
-    const data = doc.data();
+    const cont = this.querySelector("#saved-container") as HTMLElement;
+    const user = auth.currentUser;
 
-    const card = document.createElement("div");
-    card.className = "post-guardado";
+    if (!user) {
+      cont.innerHTML = "<p>Debes iniciar sesión para ver tus guardados.</p>";
+      return;
+    }
 
-    const title = document.createElement("h2");
-    title.textContent = data.title;
-    card.appendChild(title);
+    // Limpia mientras carga
+    cont.innerHTML = "<p>Cargando guardados…</p>";
 
-    const desc = document.createElement("p");
-    desc.textContent = data.description;
-    card.appendChild(desc);
+    try {
+      const posts = await fetchSavedPosts(user.uid);
+      cont.innerHTML = "";
 
-    contenedor.appendChild(card);
-  });
+      if (posts.length === 0) {
+        cont.innerHTML = "<p>No tienes posts guardados aún.</p>";
+        return;
+      }
+
+      posts.forEach(post => {
+        const card = crearCardPost(post);
+        cont.appendChild(card);
+      });
+    } catch (e: any) {
+      console.error("Error cargando guardados:", e);
+      cont.innerHTML = "<p>Error al obtener tus posts guardados.</p>";
+    }
+  }
 }
+
+if (!customElements.get("saved-page")) {
+  customElements.define("saved-page", SavedPage);
+}
+
+export default SavedPage;
