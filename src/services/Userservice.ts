@@ -38,7 +38,7 @@ export async function getAllUsers(): Promise<Friend[]> {
         id: doc.id,
         name: data.name,
         username: data.username,
-        avatar: data.avatar || '/default-avatar.png',
+        avatar: data.avatar || 'https://i.pinimg.com/736x/e0/5a/19/e05a1996300035d853b03f8af6ce0c4a.jpg',
       };
     });
 
